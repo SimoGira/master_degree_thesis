@@ -1,0 +1,74 @@
+
+%% !TeX document-id = {25c54111-b338-414a-950b-cc1bd796736d}
+%% !TeX TXS-program:compile = txs:///latex/[--shell-escape]
+%\documentclass[a4paper,12pt]{book}
+\documentclass[12pt,a4paper,openright,twoside, english]{book}
+
+\input{include}
+\input{macro}
+\input{stylemod}
+
+\author{Simone Girardi}
+\title{Title}
+
+
+% Per l'indice analitico
+\usepackage{makeidx}
+\makeindex
+
+
+\includeonly{%
+	frontcover,
+	abstract,
+	chapter1,
+	chapter2,
+	chapter3,
+	chapter4,
+	chapter5,
+	chapter6,
+	conclusion
+}
+\begin{document}
+
+% frontespizio
+\include{frontcover}
+\frontmatter
+\include{abstract}
+
+\tableofcontents
+\clearpage
+\thispagestyle{empty}
+\listoffigures
+\clearpage
+\thispagestyle{empty}
+\listoftables
+\clearpage
+\thispagestyle{empty}
+
+% inizio documento
+\mainmatter
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\include{chapter6}
+\include{conclusion}
+
+\appendix
+%\input{AppendixA}
+
+\backmatter
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{library}
+%\bibliographystyle{ieeetr}
+\bibliographystyle{plain}
+\clearpage
+\thispagestyle{empty}
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+%\printindex
+
+
+\end{document}

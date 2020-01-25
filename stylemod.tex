@@ -1,0 +1,53 @@
+%\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\chaptername}\  \thechapter.\ #1}{}}
+%\renewcommand{\sectionmark}[1]{\markright{\thesection.\ \ #1}{}}
+
+%\fancyhead{}
+%\fancyhead[LE]{\slshape \leftmark}
+%\fancyhead[RO]{\slshape \rightmark}
+%\fancyfoot[EC,OC]{\thepage}
+
+
+%\renewcommand{\headrulewidth}{0.4pt}
+
+
+% Comments and questions
+%\newenvironment{todo}{\begin{quote}\textbf{To Do:}}{\end{quote}}
+%\newenvironment{dimostrazione}{\begin{quote}\textbf{Dimostrazione:}}{\end{quote}}
+
+% Theorems, examples, ...
+%\newtheorem{example}{Esempio}
+%\newtheorem{definition}{Definizione}
+%\newtheorem{theorem}{Teorema}
+%\newtheorem{lemma}{Lemma}\\
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+
+% Box to denote end of example, definition, ...
+%\newcommand{\putbox}{\hspace*{\fill} $\Box$}
+
+
+%% Because html converters don't know tabularnewline
+%\providecommand{\tabularnewline}{\\}
+
+
+%code
+\lstset{
+	language=C++,
+	basicstyle=\small\sffamily,
+	numbers=left,
+	numberstyle=\tiny,
+	frame=tb,
+	columns=fullflexible,
+	showstringspaces=false
+}
+
+%Page settings override
+\linespread{1.2}
+%\renewcommand{\baselinestretch}{1.5}
+%\evensidemargin=3.75cm 
+%\oddsidemargin=3.35cm
+%\setlength{\oddsidemargin}{37.5mm}
+%\setlength{\evensidemargin}{35.5mm}
+
+%\pagestyle{fancy}
