@@ -3,7 +3,7 @@ Deep learning has recently been highly successful in machine learning across a v
 
 \section{Background}
 As described in \cite{Goodfellow-et-al-2016}, the modern term “deep learning” goes beyond the neuroscientific perspective engineering applications on the current breed of machine learning models. It appeals to a more general principle of learning \textit{multiple levels of composition}, which can be applied in machine learning frameworks that are not necessarily neurally inspired.
-A deep learning prediction algorithm, also known as a model, consists of a number of layers, as shown in Fig. \ref{fig:dnn}.
+A deep learning prediction algorithm, consists of a number of layers, as shown in Fig. \ref{fig:dnn}.
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{images/nn.png}
@@ -11,13 +11,16 @@ A deep learning prediction algorithm, also known as a model, consists of a numbe
 	\label{fig:dnn}
 \end{figure}
 
-In deep learning inference, the input data pass through the layers in sequence, and each layer performs matrix multiplications on the data. The output of a layer is usually the input to the subsequent layer. After data are processed by the final (fully connected) layer, the output is either a feature or a classification value.
-When the model contains many layers in sequence, the neural network is known as a deep neural network (DNN).
+In deep learning \textit{inference}, the input data pass through the node's layers in sequence, and each layer performs matrix multiplications on the data. The output of a layer is usually the input to the subsequent layer. After data are processed by the final (fully connected) layer, the output is either a feature or a classification value. When the model contains many layers in sequence, the neural network is known as a deep neural network (DNN). When the matrix multiplications include convolutional filter operations, the model is named convolutional neural networks (CNNs), which is common for image and video processing contexts. There are also DNNs designed especially for time series prediction; these are called recurrent neural networks (RNNs), which have loops in their layer connections to keep state and enable predictions on sequential inputs.
 
+In deep learning \textit{training}, the computation proceeds in reverse order. Given the ground-truth training labels, multiple passes are made over the layers to optimize the parameters of each layer of matrix multiplications, starting from the final layer and ending with the first layer. The algorithm used is typically stochastic gradient descent (SGD).  In each pass, a randomly small subset of N input data ("mini-batch") from the training data set, is selected and used to update the gradients in the direction that minimizes the training loss (where the training loss is defined as the difference between the predictions and the ground truth). One pass through the entire training data set is called a training epoch \cite{ruder2016overview}.
 
+There are some considerations to take into account: the first is that there are a large number of parameters in the matrix multiplications, resulting in many computations being performed and thus the latency issues that we see on end devices. The second is that there are many choices (hyper-parameters) on how to design the DNN models (e.g., the number of parameters per layer, and the number of layers), which makes the model design more of an art than a science. Different DNN design decisions result in tradeoffs between system metrics; for example, a DNN with higher accuracy likely requires more memory to store all the model parameters and will have higher latency because of all the matrix multiplications being performed. On the other hand, a DNN model with fewer parameters will likely execute more quickly and use less computational resources and energy, but it may not have sufficient accuracy to meet the application's requirements.
 
 
 \section{Measurement}
+How can we evaluate the performance of a neural network?
+
 
 
 \section{Frameworks}
