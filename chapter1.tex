@@ -1,29 +1,9 @@
 \chapter{Introduction} % problema? come risolvere e piano tesi `,   \cite{ }
 
-Test Robot's assisted needle insertion has attracted considerable attention in recent years, due to its application in minimally invasive percutaneous procedures as biopsy and brachytherapy \cite{Abolhassani2007}. Several other applications have been investigated, among them: regional anaesthesia, blood sampling \cite{Zivanovic2000} and neurosurgery \cite{Rizun2004}.
-The effectiveness of these treatments and the success or the precision of a diagnosis highly depends on the accuracy of percutaneous insertion.
-The desired performance is strictly related with the medical procedure: for biopsy (for prostate, kidney, breast, and liver), chemotherapy and anaesthetic a placement the accuracy of millimetres is required, while in brain, fetus eye and ear procedures a placement accuracy of micro-millimetres is desirable.
-The subcutaneous insertion of needle and catheters range in complexity from the superficial insertion of a needle stick, to the biopsy of deep-seated tumours.
-The latter involves the subcutaneous insertion of long, slender surgical needles into soft, inhomogeneous tissue, usually without a visual feedback under the skin surface.
-Complications arising from the complexity of such interventions have been studied in biopsy, brachytherapy, and particularly in anaesthesia, where it was found that such complications are largely due to lack of training and needle placement \cite{DiMaio2003}.
-Robotics can increase accuracy in needle positioning, even though most clinical solutions require manual intervention for the insertion phase.
-However robotics itself is not enough: in fact in these kind of procedures, surgeons rely on the kinaesthetic feedback from the tool (needle) and they mental 3D visualization of the anatomical structure \cite{DiMaio2003}.
-Because percutaneous therapies are constrained procedures in which target visibility, target access and tool manoeuvrability are key issues, in addition to the target physiological changes, in most cases the surgeon's mental 3D visualization of the anatomical structure is not enough, even for a manual insertion.
-With the purpose of increasing target visibility, real-time imaging techniques has been introduced. However besides benefits they introduce some undesired issues or suffers of limitation: e.g. the use of fluoroscopy for image guided surgery could expose the surgeon to radiation, MRI requires the use of non magnetical tools and equipments, and US provides 2D planar images with less resolution than the previous ones.
-Hens there is wide space for improvements in this field: in fact human errors, imaging limitations, target uncertainty, tissue deformation and needle deflection are known problems that contribute to needle misplacement.
-To address many of them, one of the goal for researchers is the development of fully automated system for a specific procedure. This system should autonomously reach a specified target by combining a wide range of information like: target position, needle tip position, forces acting on the system that can be measured or estimate by a mathematical model, and a model for the tissue deformation.  These information comes from different kinds of devices and must be exploited to both decide how to perform the desired action and supervise the procedure itself.
-These are quite complex systems, each of them extremely application specific and challenging to be designed, developed and validated.
 
-Another solution is teleoperation: by ``including'' the expertise of a clinician in the loop, we can demand the surgeon to address those main issues while preserving advantages from robotic assistance.
-In robotic surgery, teleoperation is a well established technique, with the Intuitive Surgical Da Vinci surgical robot as the most known platform.
-However, it currently does not provide force-feedback. The reason is due to the fact that introducing a feedback between the slave robot and the master console could introduce instability in the system.
-
-Kinaesthetic feedbacks and haptics feedback, could improve the performance of the surgeon and this is the main intent of this work.
-By exploiting the passivity theory, this thesis presents a passive (thus stable), even in presence of delays,  bilateral teleoperation architecture with kinesthetic feedback and a virtual guiding mode to assist the operator performing the insertion in percutaneous procedures. 
-The architecture relies upon the Two-Layer teleoperation algorithm \cite{Franken2011} enhanced with energy evaluation in the task space and the possibility to scale energy between master and slave to improve performance.
 
 \section{Thesis outline}
 This thesis is organised as follows: Chapter 2 is an overview over the research contribution in the field of percutaneous procedures, focusing on modelling the action and presenting some robotic system designed for them. In Chapter 3 the key concepts of a teleoperation system and some of the teleoperation schemas developed in the recent years are presented. In Chapter 4  is presented the port-Hamiltonian representation of the investigated teleoperation algorithm  and proved its passivity and the passivity of the two improvements proposed. In Chapter 5 is discussed the implementation of this architecture on a physical setup, lastly in Chapter 6 the experimental results are showed and discussed.
 
-\clearpage
+%\clearpage
 \thispagestyle{empty}

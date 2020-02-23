@@ -1,4 +1,4 @@
-\chapter{Experimental results}
+\chapter{Case Study}
 In order to prove the effectiveness of the variation implemented on the Two-Layer framework and the feasibility of the two teleoperation schemas proposed to perform a puncturing, a set of tests has been conducted.\\
 For each teleoperation schema we collected the result from a test scenario in which a synthetic double-layer tissue is punctured with two different angles of approach, namely 90°and 45°, demonstrating the stability of the control architecture applied to this procedure.
 Then, because of taking into account the case of multiple puncturing site a free motion test has been also carried out.\\
@@ -98,7 +98,7 @@ The energy balance in the system is assured and the master is able to provide en
 \end{figure}
 \end{center}
 \newpage
-\subsubsection{Insertion with 90° approaching angle}\label{sec:insertion-with-90-approaching-angle}
+\subsubsection{Insertion with 90° approaching angle}\label{sec:insertion-with-90-approaching-angle1}
 In this test  (\figurename s{ \ref{graph:pp90/Position} to \ref{graph:pp90/Force}}) the first two punctures have been done within the \textit{Pilot Mode}, described in Section \ref{PP_architecture}, and the other two with the standard controller.\\
 With this switch of controller we want to show the benefit of the \textit{Pilot Mode} for the insertion procedure.
 The change of controller at time 38.8s is highlighted by a vertical line.
@@ -194,7 +194,7 @@ The energy level in the slave tank increases and decreases really fast. This is 
 In this test  (\figurename s{ \ref{graph:pp90Delay/Position} to \ref{graph:pp90Delay/Force}}) the first two punctures have been done within the \textit{Pilot Mode} and the other two with the standard controller.
 The change of controller at time 38.8s is highlighted by a vertical line.
 The behaviour of the position and orientation tracking is likely the same as in the no delayed version of the experiment. We can see again a non perfect initial positioning at the master side that causes the unexpected command along the $x-y$ axis.
-The energy balance is preserved while using the \textit{Pilot Mode} as discussed in Section \ref{sec:insertion-with-90-approaching-angle}.
+The energy balance is preserved while using the \textit{Pilot Mode} as discussed in Section \ref{sec:insertion-with-90-approaching-angle1}.
 
 Regards the tank level, we can se the behaviour discussed in the free motion with delay test.
 The energy level in the slave tank increases and decreases really fast. This behaviour is due to the delay and to the RTT needed to start/stop the incoming energy flow.
@@ -320,7 +320,7 @@ In this test  (\figurename s{ \ref{graph:pf90/Position} to \ref{graph:pf90/Force
 The change of controller at time 20.0s is highlighted by a vertical line.
 
 In the first puncture we can se some unwanted movements due to the reaction force exerted on the needle shaft by the phantom tissue when the needle advance varying its orientation.
-We previously discussed this behaviour in Section \ref{sec:insertion-with-90-approaching-angle}.\\
+We previously discussed this behaviour in Section \ref{sec:insertion-with-90-approaching-angle1}.\\
 The component of that force that implies a translation is felt by the operator who try to correct the behaviour. However the lack of actuation on the orientation gives only a partial feedback.\\
 Due to to the tissue constraints the operators reaction easily produces an excessive movement that has to be balanced again. This undesired behaviour could be compensated with the \textit{Pilot controller} that preserves the force feedback along $z$. The \textit{Pilot controller} for the P-F teleoperation architecture is explained in Section \ref{sec:position---force-p-f}.\\
 The forces on $x-y$ at the slave can be explained due to the errors in position and orientation. On the master these forces are due to the violation of the virtual trajectory constraints by the operator.

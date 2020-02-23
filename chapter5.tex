@@ -1,4 +1,4 @@
-\chapter{Experimental setup}
+\chapter{Robotics Platforms}
 In this chapter we present the experimental setup on which the proposed architecture has been developed, implemented and tested.
 First we will present the master and slave robots,  then the general architecture is explained and finally we discuss on the impact that the limits of such setup have on the implementation.
 
@@ -62,7 +62,7 @@ The uniqueness of the WAM arm lies in its backdriven cable drives, similar to hu
 For the purpose of this work, a needle with its holder has been mounted at the end effector.
 The assembly includes a force sensor, the ATI Nano 17, that provides the external interaction forces in the Position - Force teleoperation schema.
 The whole assembly, from its base to the needle's tip, could be seen as a unique static transformation that could be added at the end of the WAM's kinematic chain (the last line in \tablename{ \ref{WAM_DH}}).
-\figurename{ \ref{fig:EE}} shows the WAM end-effector.
+\figurename{ \ref{fig:EE2}} shows the WAM end-effector.
 \begin{figure}
 	\subfloat[Schematics of the whole needle holder assembly]{	\includegraphics[width=\linewidth/2]{schemas/Needle_holder_assembly.pdf}
 		\label{sch:Needle_holder_assembly}}
@@ -70,7 +70,7 @@ The whole assembly, from its base to the needle's tip, could be seen as a unique
 	\includegraphics[width=\linewidth/2]{images/needle_holder.jpeg}
 	\label{fig:Needle_holder_assembly}}
 	\caption[The needle holder assembly]{The needle holder assembly}
-	\label{fig:EE}
+	\label{fig:EE2}
 \end{figure}
 
 In this thesis we are focusing on the feasibility of the teleoperation architecture thus we are not interest on dealing with needle bending. Because of that, we applied to the needle holder a nail that represent an acceptable trade-off for our intent.
