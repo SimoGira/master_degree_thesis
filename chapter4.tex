@@ -1,8 +1,103 @@
-\chapter{Robotics Applications}
+\chapter{Experimental Results}
 
 This chapter will present the improvements of the Two-Layer teleoperation architecture developed within the i-Sur European project \cite{Ferraguti2015} for a needle insertion task.
 First we present the teleoperation system modelled as a port-Hamiltonian system \cite{Ferraguti2015}, then we demonstrate both the equivalence between energy computation in task and joint space, and that a proper energy scaling between master and slave keeps the whole teleoperation system passive.
 Finally we describe the two teleoperation schemas, a Position-Position and a Position-Force architecture. Both control architectures are endowed with \textit{pilot mode} for insertion assistance.
+
+
+
+
+
+
+\begin{table}[htbp]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+			\hline
+			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
+			\hline
+			orb(j1)     		&	-  		& 43,41 	 & 13,08 		 & 49,21 			 & 43,62 			  & 0,02		 & 23,04	 & 20,32				  & 20,32 		  \\
+			\rowcolor{Gray}
+			vovd(j1)       	 	& 1,70 		& -     	 & -    		 & -     			 & -    			  & -   		 & -     	 & -    				  & -     		  \\
+			(orb;vovd)(j1)      & 2,58 		& 73,49 	 & 18,69 		 & 62,70 			 & 54,76 			  & 0,17		 & 13,61 	 & 15,95				  & 13,61 		  \\
+			\rowcolor{Gray}
+			(orb(j1);vovd(j2))  & 1,60 		& 49,81 	 & 13,53 		 & 49,25 			 & 43,01			  & 0,08 		 & 20,08	 & 20,30 				  & 20,08		  \\
+			\hline
+	\end{tabular}}
+	\caption{Performance Measurement: camera 10 Hz \label{tab:Performance-Measurement-10hz}}
+\end{table}
+
+
+\begin{table}[htbp]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+			\hline
+			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
+			\hline
+			orb(j1)     		&   -  & 54,82 & 14,47 & 49,40 & 44,35 & 0,02 & 18,24 & 20,24 & 18,24 \\
+			\rowcolor{Gray}
+			vovd(j1)       	 	& 1,70 & -     & -     & -     & -     & -    & -     & -     & -     \\
+			(orb;vovd)(j1)      & 2,85 & 93,15 & 23,96 & 67,99 & 60,41 & 0,21 & 10,74 & 14,71 & 10,74 \\
+			\rowcolor{Gray}
+			(orb(j1);vovd(j2))  & 1,60 & 56,20 & 14,00 & 49,32 & 43,95 & 0,09 & 17,79 & 20,27 & 17,79 \\
+			\hline
+	\end{tabular}}
+	\caption{Performance Measurement: camera 20 Hz \label{tab:Performance-Measurement-20hz}}
+\end{table}
+
+
+
+
+\begin{table}[htbp]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+			\hline
+			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
+			\hline
+			orb(j1)     		& -    & 42,98 & 35,43 & 82,05 & 55,70 & 0,01 & 23,27 & 12,19 & 12,19 \\
+			\rowcolor{Gray}
+			vovd(j1)       	 	& 1,23 & -     & -     & -     & -     & -    & -     & -     & -     \\
+			(orb;vovd)(j1)      & 1,40 & 66,13 & 30,09 & 69,10 & 63,75 & 0,16 & 15,12 & 14,47 & 14,47 \\
+			\rowcolor{Gray}
+			(orb(j1);vovd(j2))  & 1,24 & 46,62 & 30,10 & 74,16 & 67,80 & 0,52 & 21,45 & 13,48 & 13,48 \\
+			\hline
+	\end{tabular}}
+	\caption{kubeedge - Performance Measurement: camera 10 Hz \label{tab:kubeedge-Performance-Measurement-10hz}}
+\end{table}
+
+
+
+
+
+
+\begin{table}[htbp]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+			\hline
+			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
+			\hline
+			orb(j1)     		& -    & 38,56 & 32,65 & 80,31 & 55,48 & 0,01 & 25,93 & 12,45 & 12,45 \\
+			\rowcolor{Gray}
+			vovd(j1)       	 	& 1,21 & -     & -     & -     & -     & -    & -     & -     & -     \\
+			(orb;vovd)(j1)      & 1,43 & 74,00 & 28,48 & 68,90 & 63,11 & 0,15 & 13,51 & 14,51 & 13,51 \\
+			\rowcolor{Gray}
+			(orb(j1);vovd(j2))  & 1,26 & 51,40 & 27,33 & 66,86 & 62,50 & 0,23 & 19,46 & 14,96 & 14,96 \\
+			\hline
+	\end{tabular}}
+	\caption{Kubeedge - Performance Measurement: camera 20 Hz \label{tab:kubeedge-Performance-Measurement-20hz}}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{A model for the teleoperation system}
 The port Hamiltonian framework is a generalization of standard Hamiltonian mechanics, where energetic characteristics and power exchange between subsystems are clearly identified.
