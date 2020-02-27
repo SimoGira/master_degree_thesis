@@ -1,24 +1,34 @@
-\chapter{Methodology} 
-This chapter will focus on bilateral teleoperation.
-It will introduce what a bilateral teleoperation is and what the goals of a good teleoperation system are.
+\chapter{Verification} \label{chap:verification}
+This chapter will focus ORB-SLAM2 description and verification.
+Primarly Ii will describe how ORB-SLAM2 works.
+Secondly it will show an accurate inspection necessary to find some potential bugs that cause an unexpected behaviour of the algorithm on a sequential enviroment.
 
  \section{System description}
-A bilateral teleoperation system has the purpose to allow an operator to interact remotely with an environment. The system, generally speaking, is made of three main blocks: 
+ As described in \cite{iros2019} ORB-SLAM2 is a Simultaneus Localization And Mapping system that can works with data coming from monocular, stereo, and RGB-D cameras. A system of this kind has the purpose to allow both map reconstruction and navigation in the most common enviroment without the support of  a GPS.
+ The system consists of the following three main blocks (see \ref{fig:orbslam}):
+
 \begin{description}
-	\item[master] robot on which the operator physically acts, generating commands for the slave and perceiving feedbacks received from the slave. 
-	\item[slave] robot that interacts whit the environment executing the received command and transmit to the master a feedback (ex. force, position, velocity).
-	\item[communication channer] on which the control signal flows forward, from the master to the slave, and backward, from the slave to the master.
+	\item[Tracking and localization] 
+	This block is in charge of computing visual features, localizing the robot in the envi- ronment, and, in case of significant discrepancies between an already saved map and the input stream, communicating updated map information to the mapping block. The frames per second (FPS) that can be computed by the whole system strongly depends on the performance of this block.
+	\item[Mapping] 
+	It updates the environment map by using the information (map changes) sent by the localization block. It is a computational time consuming block and its execution rate strictly depends on the agent speed. However, consider- ing the actual agent speed of the KITTI datasets analysed in this work \cite{CVPR2012}, it does not represent a system bottleneck.
+	\item[Loop closing] 
+	It aims at adjusting the scale drift error accumulated during the input analysis. When a loop in the robot pathway is detected, this block updates the mapped information through a high latency heavy computation, dur- ing which the first two blocks are suspended. This can lead the robot to loose tracking and localization information and, as a consequence, the robot to get temporary lost. The computation efficiency of this block (running on-demand) is crucial for the quality of the final results.
+	
 \end{description}
-A block representation could be found in \figurename{\ref{sch:bilateral_teleop}}.\\
+
 \begin{figure}
-	\includegraphics[width=\textwidth]{schemas/Bilateral_Teleop.pdf}
-	\caption[Block representation of the bilateral teleoperation]{Block representation of the bilateral teleoperation.}
-	\label{sch:bilateral_teleop}
+	\centering
+	\includegraphics[width=1.00\linewidth]{images/orb-slam-overview}
+	\caption{Main blocks of the ORB-SLAM2 algorithm.}
+	\label{fig:orbslam}
 \end{figure}
+
 At each side, master and slave, a local controller is implemented that combines local and remote information to create a bilateral coupling: the operator actuates the slave while feeling a force feedback from the remote site.\\
 The communication channel could be affected by delays: this means that a command sent from the master at time $t$ is received by the slave at time $t + \tau_{m2s}$, where $\tau_{m2s}$ is the amount of time required to transmit the information in the feed forward channel.\\
 Consequently a feedback produced by the slave at time $t$ is received at the master at time $t+ \tau_{s2m}$, with $\tau_{s2m}$ the amount of time required to transmit the information in the feedback channel. The sum of  $\tau_{m2s}$ and $\tau_{s2m}$ is denoted as \textit{round-trip time} delay.\\
 A good bilateral teleoperation system should ensure the operator a transparent and stable interface with the environment, allowing safe and immediate responses to any event both known and unknown.\\
+
 From a theoretical point of view, the two main properties for a bilateral teleoperation system are:
 \begin{description}
 	\item[Stability] The system should maintain the stability of the closed control loop independently of operator's or environment's behaviour. Stability of the whole system is hard and complex to prove, thus this property is more easily investigate with the passivity theory.
