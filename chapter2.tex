@@ -5,11 +5,11 @@
 Deep learning has recently been highly successful in machine learning across a variety of application domains, including computer vision, natural language processing, and big data analysis, among others. For example, deep learning methods have consistently outperformed traditional methods for object recognition and detection in the ISLVRC Computer Vision Competition since 2012 \cite{ILSVRC15}. However, deep learning’s high accuracy comes at the expense of high computational and memory requirements for both the training and inference phases of deep learning. Training a deep learning model is space and computationally expensive due to millions of parameters that need to be iteratively refined over multiple time epochs. Inference is computationally expensive due to the potentially high dimensionality of the input data (e.g., a high-resolution image) and millions of computations that need to be performed on the input data.
 
 \subsection{Definitions}
-As described in \cite{Goodfellow-et-al-2016}, the modern term “deep learning” goes beyond the neuroscientific perspective engineering applications on the current breed of machine learning models. It appeals to a more general principle of learning \textit{multiple levels of composition}, which can be applied in machine learning frameworks that are not necessarily neurally inspired.
+As described in \cite{Goodfellow-et-al-2016}, the modern term "deep learning" goes beyond the neuroscientific perspective engineering applications on the current breed of machine learning models. It appeals to a more general principle of learning \textit{multiple levels of composition}, which can be applied in machine learning frameworks that are not necessarily neurally inspired. Deep learning is a subset of AI and machine learning and differs in that they can automatically learn representations from data such as images, video or text, to be used for classification without introducing hand-coded rules or human domain knowledge. Their highly flexible architectures can learn directly from raw data and can increase their predictive accuracy when provided with more data.
 A deep learning prediction algorithm, consists of a number of layers, as shown in Fig. \ref{fig:dnn}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{images/nn.png}
+	\includegraphics[width=\linewidth]{images/nn.png}
 	\caption[DNN example]{DNN example with image classification}
 	\label{fig:dnn}
 \end{figure}
@@ -49,24 +49,50 @@ Once the system performance is understood, the application developer can choose 
 
 
 \subsection{Frameworks}
-Several open-source software libraries are publicly available for deep learning inference and training on end devices and edge servers. Google’s TensorFlow \cite{tensorflow2015-whitepaper}, released in 2015, is an interface for expressing machine learning algorithms and an implementation for executing such algorithms on heterogeneous distributed systems. Tensorflow's computation workflow is modeled as a directed graph and utilizes a placement algorithm to distribute computation tasks based on the estimated or measured execution time and communication time \cite{abadi2016tensorflow}. The placement algorithm uses a greedy approach that places a computation task on the node that is expected to complete the computation the soonest. Tensorflow can run on edge devices, such as Raspberry Pi and smartphones. TensorFlow Lite was proposed in the late 2017 \cite{tensorflowlite}, which is an optimized version of Tensorflow for mobile and embedded devices, with mobile GPU support added in early 2019. 
+Several open-source software libraries are publicly available for deep learning inference and training on end devices and edge servers. Google’s TensorFlow \cite{tensorflow2015-whitepaper}, released in 2015, is an interface for expressing machine learning algorithms and an implementation for executing such algorithms on heterogeneous distributed systems. Tensorflow's computation workflow is designed as a directed graph and utilizes a placement algorithm to distribute computation tasks based on the estimated or measured execution time and communication time \cite{abadi2016tensorflow}. The placement algorithm uses a greedy approach that places a computation task on the node that is expected to complete the computation the soonest. Tensorflow can run on edge devices, such as Raspberry Pi and smartphones. TensorFlow Lite was proposed in the late 2017 \cite{tensorflowlite}, which is an optimized version of Tensorflow for mobile and embedded devices, with mobile GPU support added in early 2019. 
 Tensorflow Lite only provides on-device inference abilities, not training, and achieves low latency by compressing a pre-trained DNN model.
 Caffe \cite{Caffe} is another deep learning framework, originally developed by Jia, with the current version, Caffe2, maintained by Facebook. It seeks to provide an easy and straightforward way for deep learning with a focus on mobile devices, including smartphones and Raspberry Pis. PyTorch \cite{NEURIPS2019_9015} is another deep learning platform developed by Facebook, with its main goal differing from Caffe2 in which it focuses on the integration of research proto- types to production development. Actually Facebook is working on the merge of Caffe2 and PyTorch frameworks.
-GPUs are an important key element in efficient DNN inference and training. NVIDIA provides GPU software libraries to make use of NVIDIA GPUs, such as CUDA \cite{CUDA} for general GPU processing and cuDNN \cite{cuDNN} which is targeted toward deep learning. While such libraries are useful for training DNN models on a desktop server, cuDNN and CUDA are not widely available on current mobile devices such as smartphones. To utilize smartphone GPUs, Android devel- opers can currently make use of Tensorflow Lite, which provides experimental GPU capabilities. To experiment with edge devices other than smartphones, researchers can turn to edge-specific development kits, such as the Nvidia Jetson TX2 development kit for experimenting with edge computing (e.g., as used in [33]), with Nvidia-provided SDKs used to program the devices.
+GPUs are an important key element in efficient DNN inference and training. NVIDIA provides GPU software libraries to make use of NVIDIA GPUs, such as CUDA \cite{CUDA} for general GPU processing and cuDNN \cite{cuDNN} which is targeted toward deep learning. While such libraries are useful for training DNN models on a desktop server, cuDNN and CUDA are not widely available on current mobile devices such as smartphones. To utilize smartphone GPUs, Android devel- opers can currently make use of Tensorflow Lite, which provides experimental GPU capabilities. To experiment with edge devices other than smartphones, researchers can turn to edge-specific development kits, such as the NVIDIA Jetson TX2 development kit for experimenting with edge computing, with NVIDIA-provided SDKs used to program the devices.
 
 
 
 \subsection{Challenges}
-Because of the required competences and effort to choose the best neural network and the best parameters that better fit the application of interest, there has also been much recent interest in automated machine learning, which uses artificial intelligence to choose which DNN model to run and tune the hyperparameters. 
+Because of the required competences and effort to choose the best neural network and the best parameters that better fit the applications of our interest, there has also been much recent studies in automated machine learning, which uses artificial intelligence to choose which DNN model to run and tune the hyperparameters. 
 For example, Tan et al. \cite{tan2018mnasnet} and Taylor et al. \cite{taylor2018adaptive} proposed using reinforcement learning and traditional machine learning, respectively, to choose the right hyperparameters for mobile devices, which is useful in edge scenarios.
+As described in \cite{deepedgerev} many challenges remain in deploying deep learning on the edge, not only on end devices but also on the edge servers and on a combination of end devices, edge servers, and the cloud. For example parameters like latency, energy consumption and migration still the main challenges in the field of deep learning applied to the edge computing.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Robotics Platforms}
 
+\subsection{ROS}
+The Robot Operating System (ROS) \cite{ROS} is a open-source framework based on the component-based software engineering paradigm that provides the middleware for inter-process communication. Initially developed by the Stanford  Artificial Intelligence Laboratory its development continued at Willow Garage, a robotics research institute, and now it's maintained and improved under the action of the ORSF foundation \cite{ROS}. As a meta-operating system, ROS offers features such as hardware abstraction, low-level device control, implementation of commonly used functionalities, message communication between processes and package management. It uses an asynchronous publish/subscribing mechanism made possible by message standardisation and encapsulation that make the external interface of every node as general as possible, allowing quick nodes exchange and, thus, great architectural flexibility. Each independent block, called \textit{node}, executes a particular task of a process and can communicates with other nodes through \textit{topics}. This allows to create complex architectures by aggregating many simpler entities and simplifies the use of different tasks  or different methods for the same task. Additionally to the message-passing system, the core ROS component, called \textit{roscore}, maintains a global execution time for the nodes to achieve synchronisation. Each node executes separately with its own internal clock driven by the set execution rate. At every message sent/received, containing the internal time information, the core component updates the global time by following the execution status provided by these messages.
+
+\subsection{NVIDIA Isaac SDK}
+
+
+
+\subsection{CoppeliaSim}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Edge Computing}
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Docker}
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Kubernetes}
+
+
 
 
 \clearpage
