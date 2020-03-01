@@ -63,37 +63,63 @@ As described in \cite{deepedgerev} many challenges remain in deploying deep lear
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Robotics Platforms}
+\section{Robotics Tools and Platforms} \label{sec:Robotics-Tools-and-Platforms}
+This section will cite and recap the main robotics platforms discovered and explored during the development of this thesis.
 
 \subsection{ROS}
 The Robot Operating System (ROS) \cite{ROS} is a open-source framework based on the component-based software engineering paradigm that provides the middleware for inter-process communication. Initially developed by the Stanford  Artificial Intelligence Laboratory its development continued at Willow Garage, a robotics research institute, and now it's maintained and improved under the action of the ORSF foundation \cite{ROS}. As a meta-operating system, ROS offers features such as hardware abstraction, low-level device control, implementation of commonly used functionalities, message communication between processes and package management. It uses an asynchronous publish/subscribing mechanism made possible by message standardisation and encapsulation that make the external interface of every node as general as possible, allowing quick nodes exchange and, thus, great architectural flexibility. Each independent block, called \textit{node}, executes a particular task of a process and can communicates with other nodes through \textit{topics}. This allows to create complex architectures by aggregating many simpler entities and simplifies the use of different tasks  or different methods for the same task. Additionally to the message-passing system, the core ROS component, called \textit{roscore}, maintains a global execution time for the nodes to achieve synchronisation. Each node executes separately with its own internal clock driven by the set execution rate. At every message sent/received, containing the internal time information, the core component updates the global time by following the execution status provided by these messages.
+For more clarity about how ROS communication works an example is provided in figure \ref{fig:ros-nodes-topics}. When a publishing node will announce to the master that it is publishing over a topic and the subscribing node will say to the master that it want to listen to a topic. Then if the publisher
+and the subscriber are on the same topic, the master will transfer data in order for the two other node to communicate directly via TCP/IP or UDP.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.90\textwidth]{images/ROSexample2.pdf}
+	\caption{Example of nodes and topic communication}
+	\label{fig:ros-nodes-topics}
+\end{figure}
+
+The reason to choose ROS for the development of robotics applications resides mainly in its high modularity. Furthermore it is a well known standard in the scientific community of the robotics researches and developers.
+
+
+
 
 \subsection{NVIDIA Isaac SDK}
+The Isaac SDK is the main software toolkit provided by NVIDIA and allows developers to brought new opportunities for developing robotics solutions as well as researching topics in this field. As described in \cite{ISAAC} it's comprised of the following:
+\begin{itemize}
+	\item Isaac Robot Engine: A framework which allows you to easily write modular applications and deploy them on your robots.
+	\item Isaac GEMs: A collection of robotics algorithms from planning to perception, most of them GPU-accelerated.
+	\item Applications: Various example applications from basic samples which show specific features to applications that facilitate complicated robotics use cases.
+	\item Isaac Sim for Navigation: A powerful virtual robotics laboratory and a high-fidelity 3D world simulator that accelerates research, design, and development by reducing cost and risk.
+\end{itemize}
 
+The main reasons we would consider to use this platform reside in its high modularity and high performance solutions that it is able to offer on NVIDIA Jetson platforms.
+Others important reasons to adopt this solution are related the \textbf{C API} that allows the communication with Isaac apps from languages other than C++, and the \textbf{ROS bridge} that offers the capability to interact with ROS nodes applications.
 
+%TODO put an images that shows the Isaac architecture
 
 \subsection{CoppeliaSim}
+From the creators of V-Rep \cite{VREP}, CoppeliaSim \cite{coppeliaSim} seems to be the definitive solution for development of robotics applications.
+The robot simulator CoppeliaSim, with integrated development environment, is based on a distributed control architecture: each object/model can be individually controlled via an embedded script, a plugin, ROS nodes, BlueZero nodes, remote API clients, or a custom solution. This makes CoppeliaSim very versatile and ideal for multi-robot applications. Controllers can be written in C/C++, Python, Java, Lua, Matlab, Octave or Urbi.
+CoppeliaSim can be used as a stand-alone application or can easily be embedded into a main client application: its small footprint and elaborate API makes CoppeliaSim an ideal candidate to embed into higher-level applications. An integrated Lua script interpreter makes CoppeliaSim an extremely versatile application, leaving the freedom to the user to combine the low/high-level functionalities to obtain new high-level functionalities.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Edge Computing} %TODO
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Edge Computing}
+\section{Docker} %TODO
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Docker}
-
+\section{Kubernetes} \label{kubernetesbackground} %TODO
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Kubernetes}
-
-
-
-
+\section{Kubeedge} \label{kubeedgebackground} %TODO
 \clearpage
 \thispagestyle{empty}

@@ -2,6 +2,34 @@
 In this chapter we present the experimental setup on which the proposed architecture has been developed, implemented and tested.
 %First we will present the master and edge robot (nodes),  then the general architecture is explained and finally we discuss on the impact that the limits of such setup have on the implementation.
 
+\section{Setup}
+The main technicals specifications of the Host are shown in table \ref{tab:tech-specs-host}.
+
+
+\begin{table}[ht!]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		\rowcolor{Gray}
+		Hardware 			& Model 												\\
+		\hline
+		Processor 			& Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz				\\
+		Operating System 	& 18.04.1-Ubuntu										\\
+		Storage 			& SATA 500GiB											\\
+		Memory				& 16GiB													\\
+		GPU					& NVIDIA GeForce GTX 980								\\
+		\hline
+		\rowcolor{Gray}
+		Software 			& Version 												\\
+		\hline
+		OpenCV				& 3.4.7													\\
+		CUDA				& 10.0													\\
+		ROS					& Melodic Moreina										\\
+		\hline
+	\end{tabular}
+	\caption{Technical specifications of the Host \label{tab:tech-specs-host}}
+\end{table}
+
 \section{Mobile robots}
 
 
@@ -12,9 +40,9 @@ In this chapter we present the experimental setup on which the proposed architec
 
 
 \section{Results}
-\begin{table}[htbp]
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{table}[ht!]
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
 			\hline
 			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
 			\hline
@@ -29,10 +57,9 @@ In this chapter we present the experimental setup on which the proposed architec
 	\caption{Performance Measurement: camera 10 Hz \label{tab:Performance-Measurement-10hz}}
 \end{table}
 
-
-\begin{table}[htbp]
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{table}[ht!]
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
 			\hline
 			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
 			\hline
@@ -47,42 +74,39 @@ In this chapter we present the experimental setup on which the proposed architec
 	\caption{Performance Measurement: camera 20 Hz \label{tab:Performance-Measurement-20hz}}
 \end{table}
 
-
-
-
-\begin{table}[htbp]
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{table}[ht!]
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
 			\hline
 			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
 			\hline
-			orb(j1)     		& -    & 42,98 & 35,43 & 82,05 & 55,70 & 0,01 & 23,27 & 12,19 & 12,19 \\
+			orb(j1)     		& -    & 47,28 & 12,78 & 40,52 & 36,02 & 0,01 & 21,15 & 24,68 & 21,15  \\
 			\rowcolor{Gray}
-			vovd(j1)       	 	& 1,23 & -     & -     & -     & -     & -    & -     & -     & -     \\
-			(orb;vovd)(j1)      & 1,40 & 66,13 & 30,09 & 69,10 & 63,75 & 0,16 & 15,12 & 14,47 & 14,47 \\
+			vovd(j1)       	 	& 1,30 & -     & -     & -     & -     & -    & -     & -     & -     \\
+			(orb;vovd)(j1)      & 1,40 & 82,47 & 15,10 & 53,54 & 48,09 & 0,23 & 12,12 & 18,68 & 12,12 \\
 			\rowcolor{Gray}
-			(orb(j1);vovd(j2))  & 1,24 & 46,62 & 30,10 & 74,16 & 67,80 & 0,52 & 21,45 & 13,48 & 13,48 \\
+			(orb(j1);vovd(j2))  & 1,38 & 50,83 & 13,98 & 43,80 & 38,04 & 0,33 & 19,67 & 22,83 & 19,67 \\
 			\hline
 	\end{tabular}}
-	\caption{kubeedge - Performance Measurement: camera 10 Hz \label{tab:kubeedge-Performance-Measurement-10hz}}
+	\caption{kubeedge - Performance Measurement: camera 10 Hz \label{tab:Kubeedge-Performance-Measurement-10hz}}
 \end{table}
 
 
-\begin{table}[htbp]
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{table}[ht!]
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
 			\hline
 			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
 			\hline
-			orb(j1)     		& -    & 38,56 & 32,65 & 80,31 & 55,48 & 0,01 & 25,93 & 12,45 & 12,45 \\
+			orb(j1)     		& -    & 50,20 & 16,20 & 42,16 & 34,82 & 0,10 & 19,92 & 23,72 & 19,92 \\
 			\rowcolor{Gray}
 			vovd(j1)       	 	& 1,21 & -     & -     & -     & -     & -    & -     & -     & -     \\
-			(orb;vovd)(j1)      & 1,43 & 74,00 & 28,48 & 68,90 & 63,11 & 0,15 & 13,51 & 14,51 & 13,51 \\
+			(orb;vovd)(j1)      & 1,43 & 70,54 & 15,02 & 55,60 & 50,24 & 0,22 & 14,18 & 17,98 & 14,18 \\
 			\rowcolor{Gray}
-			(orb(j1);vovd(j2))  & 1,26 & 51,40 & 27,33 & 66,86 & 62,50 & 0,23 & 19,46 & 14,96 & 14,96 \\
+			(orb(j1);vovd(j2))  & 1,26 & 58,14 & 13,52 & 42,34 & 37,17 & 0,32 & 17,20 & 23,62 & 17,20 \\
 			\hline
 	\end{tabular}}
-	\caption{Kubeedge - Performance Measurement: camera 20 Hz \label{tab:kubeedge-Performance-Measurement-20hz}}
+	\caption{Kubeedge - Performance Measurement: camera 20 Hz \label{tab:Kubeedge-Performance-Measurement-20hz}}
 \end{table}
 
 

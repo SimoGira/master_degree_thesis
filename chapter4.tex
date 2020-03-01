@@ -1,15 +1,14 @@
 \chapter{Methodology} \label{chap:methodology}
-This chapter will present a multi-level model design flow for the integration of heterogeneous applications and their deployment them to the edge on embedded low power devices like NVIDIA Jetson TX2.
+This chapter will present a multi-level model design flow for the integration of heterogeneous applications and their deployment to the edge on embedded low power devices like NVIDIA Jetson TX2.
 
 
 \section{A ROS based robotic system}
-The choice of the most suitable integration platform is one of the main problems to be faced when integrating heterogeneous applications such as robotic applications. This choice will have implications on performance and communication on the whole system. Furthermore it will be a key factor during the design phase of the entire architecture.
+The choice of the most suitable integration platform is one of the main problems to be faced when integrating heterogeneous applications such as robotic software systems. This choice will have implications on performance and communication of the whole system. Furthermore it will be a key factor during the design phase of the entire architecture.
 After an accurate comparison among all available robotics platforms, for the purpose of our specific application we decided to use ROS \cite{ROS} in favour of its standard on communication among other applications.
 
 \subsection{Architecture at L1}
-At this architecture level we put the whole system on a single Intel x86 powered machine that we will conventionally call \textit{host}. The technical specification of  the host are shown in table ... %TODO table with tech specs
-
-This is the simplest and the most common architecture used by robotics researches. As we can see in figure \ref{fig:l1arch}, we have two main ROS nodes that communicate between them following the ROS standard. Specifically speaking, in this case we have both ORB-SLAM2 and VOVD running as ROS nodes to perform a mobile robot navigation task.
+At this architecture level we put the whole system on a single Intel x86 powered machine that we will conventionally call \textit{Host}. 
+This is the simplest and the most common architecture used by robotics researches. As we can see in figure \ref{fig:l1arch}, in this case we have two main ROS nodes that communicate between them. Specifically speaking, in this case we have both ORB-SLAM2 and VOVD \cite{VOVD} running as ROS nodes to perform a mobile robot navigation task.
 
 \begin{figure}
 	\centering
@@ -18,30 +17,55 @@ This is the simplest and the most common architecture used by robotics researche
 	\label{fig:l1arch}
 \end{figure}
 
-After the installation of ROS Melodic Morenia \cite{rosmelodic} on our host pc, the first step to achieve this goal has been porting the VOVD \cite{VOVD} application from ROS Kinetic version, with which it was developed, so that the application can be compatible with the our current installed version of ROS. This task required a redefinition of some functions related to the ROS \textit{tf2} package \cite{tfros} due to the deprecation of the \textit{tf} package functions previously used.
-ORB-SLAM2 comes already provided with the necessaries functions to run in a ROS environment, so no others operations have been required to complete our first level architecture.
+Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because of VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \textit{tf2} package \cite{tfros} due to the deprecation of the \textit{tf} package functions previously used. 
+Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo}. The problem was that it came with a featureless map generated from an URDF file, and because of ORB-SLAM2 works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
+Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, so no others operations have been required to complete our first level architecture.
+
+
 
 \subsection{Architecture at L2} %TODO Work in progress
-The next step require the split of our system ... host - device 
+The next step requires the split of our system in two parts: Host (simulator) and Device/s (Edge Computing node/s).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{images/L2_arch}
+	\caption{L2 architecture}
+	\label{fig:l2arch}
+\end{figure}
 
 
-\subsection{Architecture at L3}	%TODO questo non lo abbiamo fatto ...
-host - device - robot ...
 
 
 
 
-\section{Deployment from the cloud to the edge}
-% How to prepare an application for edge computing in Kubeedge?
+
+\subsection{Architecture at L3}	%TODO questo non lo abbiamo fatto ma lo mettiamo lo stesso.
+Host - Device/s - Robot ...
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{images/L3_arch}
+	\caption{L3 architecture}
+	\label{fig:l3arch}
+\end{figure}
 
 
-\subsection{ORB-SLAM2 at the edge}
+\section{Deployment from the cloud to the edge} % How to prepare an application for edge computing in Kubeedge?
+As mentioned in \ref{kubeedgebackground}, Kubeedge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, your applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing your components is a requirement for Kubernetes, it also allow easy scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics make it possible to package your applications so that they run smoothly on Kubernetes.
+In this section it will described the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of Kubeedge.
 
 
 \subsection{VOVD at the edge}
+%TODO Dockerfile di VOVD 
+%TODO Problemi in fase di building del container --> ROS network comunication
 
+
+\subsection{ORB-SLAM2 at the edge}
+%TODO Dockerfile di ORB_SLAM2 
+%TODO Problemi in fase di building del container --> ROS + GPU
 
 \section{The whole system on Kubeedge}
+%TODO Once we have containerized out application we are ready do deploy them from the cloud to the edge with kubeedge: L1, L2, L3 ?!.
 
 
 
