@@ -1,5 +1,5 @@
 \chapter{Verification} \label{chap:verification}
-This chapter will focus on description and verification of ORB-SLAM2 \cite{murORB2} improved solution proposed in IROS 2019 conference \cite{iros2019}. Primary it will describe how ORB-SLAM2 works. Secondly it will show an accurate inspection necessary to find some potential bugs that cause an unexpected behaviour of the algorithm in a sequential environment.
+This chapter will focus on description and verification of ORB-SLAM2 \cite{murORB2} improved solution proposed in the IROS 2019 conference \cite{iros2019}. Primary it will describe how ORB-SLAM2 works. Secondly it will show an accurate inspection necessary to find some potential bugs that cause an unexpected behaviour of the algorithm in a sequential environment.
 
  \section{System description}
  As described in \cite{iros2019}, ORB-SLAM2 is a Simultaneous Localization And Mapping system that can works with data coming from monocular, stereo, and RGB-D cameras. A system of this kind has the purpose to allow both map reconstruction and navigation in the most common environment without the support of a GPS.
@@ -22,14 +22,23 @@ This chapter will focus on description and verification of ORB-SLAM2 \cite{murOR
 \end{figure}
 
 
-The system is organized on three parallel threads, one per block. The use of parallel threads allows for obtaining real-time processing on an Intel Core i7 desktop PC with 16GB RAM \cite{murORB2}.
-The work done in \cite{iros2019} ...%TODO scrivi qui cosa ha fatto stefano
+The system is organized on three parallel threads, one per block. The use of parallel threads allows for obtaining real-time processing on an Intel Core i7 desktop PC with 16GB RAM \cite{murORB2}. The original open source version of ORB-SLAM2 provides two level of parallelism. The first level is given by the three main algorithm blocks (see Fig. \ref{fig:orbslam}), which are implemented to be run as parallel PThreads on shared-memory multi-core CPUs. The second level is given by the automatic parallel implementation (i.e., through OpenMP directives) of the \textit{bundle adjustment} sub-block, which is part both of the local mapping and loop closing blocks. This allows the parallel computation of such a long latency task on multi-core CPUs.
+To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board, the work done in \cite{iros2019} added two further levels of parallelism. The first is given by the parallel implementation for GPU of a set of tracking sub-blocks (see Fig. \ref{FIG:FE-DAG}). This is because the most important bottleneck that characterizes the processing rate in terms of supported FPS, was detected on the feature extraction block. The second is given by the implementation of a 8-stage pipeline of such sub-blocks in order to benefit of an overlapped computation.
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width=\linewidth]{images/orb_feature.pdf}
+	\caption{DAG of the feature extraction block and the corresponding sub-block implementations (GPU vs. CPU).}\label{FIG:FE-DAG}
+\end{figure}
 
 
+%TODO pensavo qui di riportare un riassunto della sezione A della metodolgia del paper di IROS ed un paio di risultati sperimentali ...
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Unexpected behaviour}
 After the porting and the optimizations of the ORB-SLAM2 algorithm on the NVIDIA Jetson TX2 to achieve real-time performance, the experimental results conducted in \cite{iros2019} shown a massive improvement of the execution times on some KITTI dataset sequences.
-Unfortunately, despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours.
-More specifically, it get into the Tack Lost state soon after initialization, and another Track Lost state after crossing the threshold of 5 elaborated Keyframes. (see fig: \ref{tracklost})
+Nevertheless these performance improvements, the algorithm seems to exhibit some unexpected behaviours, especially in sequences that contain a high temporal-space variation between one frame and the next one. More specifically, it get into the Tack Lost state soon after initialization, and another Track Lost state after crossing the threshold of 5 elaborated Keyframes (see fig:\ref{tracklost}).
 
 
 \begin{figure}
@@ -39,8 +48,13 @@ More specifically, it get into the Tack Lost state soon after initialization, an
 	\label{fig:tracklost}
 \end{figure}
 
+Trying to solve this problem a bottom-up workflow has been followed. %TODO in progress
 
-Trying to solve this problem a bottom-up workflow has been followed, %TODO in progress
+
+
+
+
+
 
 \subsection{The problem of the non-determinism} % possible reasons that cause a non deterministic behaviour
 
@@ -50,6 +64,7 @@ Trying to solve this problem a bottom-up workflow has been followed, %TODO in pr
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}
 In this chapter the problem of non deterministic behaviour has been addressed and some of the possible solutions to overcome the problem of ...  have been presented.
 

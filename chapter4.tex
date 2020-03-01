@@ -18,7 +18,7 @@ This is the simplest and the most common architecture used by robotics researche
 \end{figure}
 
 Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because of VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \textit{tf2} package \cite{tfros} due to the deprecation of the \textit{tf} package functions previously used. 
-Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo}. The problem was that it came with a featureless map generated from an URDF file, and because of ORB-SLAM2 works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
+Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo}. The problem was that it came with a featureless map generated from an URDF file, and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
 Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, so no others operations have been required to complete our first level architecture.
 
 
