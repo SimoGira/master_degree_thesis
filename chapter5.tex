@@ -44,70 +44,86 @@ The main technicals specifications of the Host are shown in table \ref{tab:tech-
 	\resizebox{\linewidth}{!}{%
 		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
 			\hline
-			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
+			\hspace{3mm} Setup & Odom VOVD (ms) & Track Pipe (ms) & Decompression (ms) & Frame Elaboration (ms) & Feature Extraction (ms) & Publish Pose (ms) & Track (FPS) & Feature Extraction (FPS) & Supported (FPS)  \\ 
 			\hline
-			orb(j1)     		&	-  		& 43,41 	 & 13,08 		 & 49,21 			 & 43,62 			  & 0,02		 & 23,04	 & 20,32				  & 20,32 		  \\
 			\rowcolor{Gray}
-			vovd(j1)       	 	& 1,70 		& -     	 & -    		 & -     			 & -    			  & -   		 & -     	 & -    				  & -     		  \\
-			(orb;vovd)(j1)      & 2,58 		& 73,49 	 & 18,69 		 & 62,70 			 & 54,76 			  & 0,17		 & 13,61 	 & 15,95				  & 13,61 		  \\
-			\rowcolor{Gray}
-			(orb(j1);vovd(j2))  & 1,60 		& 49,81 	 & 13,53 		 & 49,25 			 & 43,01			  & 0,08 		 & 20,08	 & 20,30 				  & 20,08		  \\
+			\multicolumn{10}{|c|}{Performance Measurement: camera 10 Hz}  \\
 			\hline
+			orb(j1)     					 &	-  		  & 43.41 & 13.08  & 49.21 & 43.62  & 0.02 & 23.04 & 20.32	& 20.32   \\ \hline
+			vovd(j1)       	 			  & 1.70  & -     	 	 & -    		 & -     		& -    		   & -   	   & -     	 	  & -    		 & -     		  \\ \hline
+			(orb;vovd)(j1)      	& 2.58 	& 73.49 & 18.69  & 62.70 & 54.76  & 0.17 & 13.61  & 15.95 & 13.61 	 \\ \hline
+			(orb(j1);vovd(j2))  & 1.60 	& 49.81 & 13.53  & 49.25 & 43.01  & 0.08 & 20.08  & 20.30 & 20.08	 \\ \hline
+			\rowcolor{Gray}
+			\multicolumn{10}{|c|}{Performance Measurement: camera 20 Hz}  \\
+			\hline
+			orb(j1)     					 &   -  	 & 54.82 & 14.47 & 49.40 & 44.35 & 0.02 & 18.24  & 20.24 & 18.24 	 \\ \hline
+			vovd(j1)       	 			  & 1.70 & -     		& -     	   & -     		 & -     		& -    		& -     	   & -     		  & -     			 \\ \hline
+			(orb;vovd)(j1)      	& 2.85 & 93.15 & 23.96 & 67.99 & 60.41 & 0.21 & 10.74  & 14.71 & 10.74 		\\ \hline
+			(orb(j1);vovd(j2))  & 1.60 & 56.20 & 14.00 & 49.32 & 43.95 & 0.09 & 17.79  & 20.27 & 17.79 		\\ \hline
+			\rowcolor{Gray}
+			\multicolumn{10}{|c|}{Kubeedge - Performance Measurement: camera 10 Hz}  \\
+			\hline
+			orb(j1)     					& -    		 & 47.28 & 12.78  & 40.52 & 36.02 & 0.01 & 21.15 & 24.68 & 21.15 	 \\ \hline
+			vovd(j1)       	 			  & 1.30 & -     		& -     	   & -     		  & -     		 & -     	 & -     	    & -     	  & -     			 \\ \hline
+			(orb;vovd)(j1)      	& 1.40 & 82.47 & 15.10  & 53.54 & 48.09 & 0.23 & 12.12 & 18.68 & 12.12		\\ \hline
+			(orb(j1);vovd(j2))  & 1.38 & 50.83 & 13.98  & 43.80 & 38.04 & 0.33 & 19.67 & 22.83 & 19.67		\\ \hline
+			\rowcolor{Gray}
+			\multicolumn{10}{|c|}{Kubeedge - Performance Measurement: camera 20 Hz}  \\
+			\hline
+			orb(j1)     					 & -    	 & 50.20 & 16.20 & 42.16 & 34.82 & 0.10 & 19.92  & 23.72   & 19.92  \\ \hline
+			vovd(j1)       	 			  & 1.21 & -			& -     	   & -     		 & -     		& -    		& -     		& -     		& -     		\\ \hline
+			(orb;vovd)(j1)      	& 1.43 & 70.54 & 15.02  & 55.60 & 50.24 & 0.22 & 14.18 	& 17.98	 & 14.18  \\ \hline
+			(orb(j1);vovd(j2))  & 1.26 & 58.14 & 13.52  & 42.34 & 37.17 & 0.32 & 17.20 	& 23.62  & 17.20  \\ \hline
 	\end{tabular}}
-	\caption{Performance Measurement: camera 10 Hz \label{tab:Performance-Measurement-10hz}}
-\end{table}
-
-\begin{table}[ht!]
-	\resizebox{\linewidth}{!}{%
-		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
-			\hline
-			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
-			\hline
-			orb(j1)     		&   -  & 54,82 & 14,47 & 49,40 & 44,35 & 0,02 & 18,24 & 20,24 & 18,24 \\
-			\rowcolor{Gray}
-			vovd(j1)       	 	& 1,70 & -     & -     & -     & -     & -    & -     & -     & -     \\
-			(orb;vovd)(j1)      & 2,85 & 93,15 & 23,96 & 67,99 & 60,41 & 0,21 & 10,74 & 14,71 & 10,74 \\
-			\rowcolor{Gray}
-			(orb(j1);vovd(j2))  & 1,60 & 56,20 & 14,00 & 49,32 & 43,95 & 0,09 & 17,79 & 20,27 & 17,79 \\
-			\hline
-	\end{tabular}}
-	\caption{Performance Measurement: camera 20 Hz \label{tab:Performance-Measurement-20hz}}
-\end{table}
-
-\begin{table}[ht!]
-	\resizebox{\linewidth}{!}{%
-		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
-			\hline
-			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
-			\hline
-			orb(j1)     		& -    & 47,28 & 12,78 & 40,52 & 36,02 & 0,01 & 21,15 & 24,68 & 21,15  \\
-			\rowcolor{Gray}
-			vovd(j1)       	 	& 1,30 & -     & -     & -     & -     & -    & -     & -     & -     \\
-			(orb;vovd)(j1)      & 1,40 & 82,47 & 15,10 & 53,54 & 48,09 & 0,23 & 12,12 & 18,68 & 12,12 \\
-			\rowcolor{Gray}
-			(orb(j1);vovd(j2))  & 1,38 & 50,83 & 13,98 & 43,80 & 38,04 & 0,33 & 19,67 & 22,83 & 19,67 \\
-			\hline
-	\end{tabular}}
-	\caption{kubeedge - Performance Measurement: camera 10 Hz \label{tab:Kubeedge-Performance-Measurement-10hz}}
+	\caption{Performance Measurement\label{tab:Performance-Measurement}}
 \end{table}
 
 
-\begin{table}[ht!]
-	\resizebox{\linewidth}{!}{%
-		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
-			\hline
-			Setup 			 	& Odom VOVD & Track Pipe & Decompression & Frame Elaboration & Feature Extraction & Publish Pose & FPS Track & FPS Feature Extraction & FPS Supported \\ 
-			\hline
-			orb(j1)     		& -    & 50,20 & 16,20 & 42,16 & 34,82 & 0,10 & 19,92 & 23,72 & 19,92 \\
-			\rowcolor{Gray}
-			vovd(j1)       	 	& 1,21 & -     & -     & -     & -     & -    & -     & -     & -     \\
-			(orb;vovd)(j1)      & 1,43 & 70,54 & 15,02 & 55,60 & 50,24 & 0,22 & 14,18 & 17,98 & 14,18 \\
-			\rowcolor{Gray}
-			(orb(j1);vovd(j2))  & 1,26 & 58,14 & 13,52 & 42,34 & 37,17 & 0,32 & 17,20 & 23,62 & 17,20 \\
-			\hline
-	\end{tabular}}
-	\caption{Kubeedge - Performance Measurement: camera 20 Hz \label{tab:Kubeedge-Performance-Measurement-20hz}}
+
+
+
+\begin{table}[hbt]
+	\begin{tabularx}{\linewidth}{@{}l*{7}{C}c@{}}
+		\toprule
+		\hline
+		Setup              & Odom (ms) & Track Pipe (ms) & Dec. (ms) & Frame Elab. (ms) & Feature Ext.(ms) & Supp. (FPS) \\
+		\hline
+		\rowcolor{Gray}
+		\multicolumn{7}{|c|}{Performance Measurement: camera 10 Hz}                                                                                                                                           \\
+		\hline
+		orb(j1)            & -             & 43.41          & 13.08             & 49.21                 & 43.62                  & 20.32           \\ \hline
+		vovd(j1)           & 1.70          & -              & -                 & -                     & -                      & -               \\ \hline
+		(orb;vovd)(j1)     & 2.58          & 73.49          & 18.69             & 62.70                 & 54.76                  & 13.61           \\ \hline
+		(orb(j1);vovd(j2)) & 1.60          & 49.81          & 13.53             & 49.25                 & 43.01                  & 20.08           \\ \hline
+		\rowcolor{Gray}
+		\multicolumn{7}{|c|}{Performance Measurement: camera 20 Hz}                                                                                                                                           \\
+		\hline
+		orb(j1)            & -             & 54.82          & 14.47             & 49.40                 & 44.35                  & 18.24           \\ \hline
+		vovd(j1)           & 1.70          & -              & -                 & -                     & -                      & -               \\ \hline
+		(orb;vovd)(j1)     & 2.85          & 93.15          & 23.96             & 67.99                 & 60.41                  & 10.74           \\ \hline
+		(orb(j1);vovd(j2)) & 1.60          & 56.20          & 14.00             & 49.32                 & 43.95                  & 17.79           \\ \hline
+		\rowcolor{Gray}
+		\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 10 Hz}                                                                                                                                \\
+		\hline
+		orb(j1)            & -             & 47.28          & 12.78             & 40.52                 & 36.02                  & 21.15           \\ \hline
+		vovd(j1)           & 1.30          & -              & -                 & -                     & -                      & -               \\ \hline
+		(orb;vovd)(j1)     & 1.40          & 82.47          & 15.10             & 53.54                 & 48.09                  & 12.12           \\ \hline
+		(orb(j1);vovd(j2)) & 1.38          & 50.83          & 13.98             & 43.80                 & 38.04                  & 19.67           \\ \hline
+		\rowcolor{Gray}
+		\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 20 Hz}                                                                                                                                \\
+		\hline
+		orb(j1)            & -             & 50.20          & 16.20             & 42.16                 & 34.82                  & 19.92           \\ \hline
+		vovd(j1)           & 1.21          & -              & -                 & -                     & -                      & -               \\ \hline
+		(orb;vovd)(j1)     & 1.43          & 70.54          & 15.02             & 55.60                 & 50.24                  & 14.18           \\ \hline
+		(orb(j1);vovd(j2)) & 1.26          & 58.14          & 13.52             & 42.34                 & 37.17                  & 17.20           \\ \hline
+		\bottomrule
+	\end{tabularx}
+	\caption{\label{tab:Performance-Measurement2}Performance Measurement.}
 \end{table}
+
+
+
+
 
 
 
