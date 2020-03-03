@@ -27,7 +27,7 @@ To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board,
 
 \begin{figure}[t!]
 	\centering
-	\includegraphics[width=\linewidth]{images/orb_feature.pdf}
+	\includegraphics[width=\linewidth]{images/orb-feature.pdf}
 	\caption{DAG of the feature extraction block and the corresponding sub-block implementations (GPU vs. CPU).}\label{FIG:FE-DAG}
 \end{figure}
 
@@ -38,17 +38,21 @@ To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Unexpected behaviour}
 After the porting and the optimizations of the ORB-SLAM2 algorithm on the NVIDIA Jetson TX2 to achieve real-time performance, the experimental results conducted in \cite{iros2019} shown a massive improvement of the execution times on some KITTI dataset sequences.
-Nevertheless these performance improvements, the algorithm seems to exhibit some unexpected behaviours, especially in sequences that contain a high temporal-space variation between one frame and the next one. More specifically, it get into the Tack Lost state soon after initialization, and another Track Lost state after crossing the threshold of 5 elaborated Keyframes (see fig:\ref{tracklost}).
-
+Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. More specifically, it get into the Tack Lost state (fig. \ref{fig:lost})  in a totally randomic way. Another Track lost state is reached when less then 5 Keyframes are computed and it losts its position (see fig: \ref{fig:lost-reset}).
 
 \begin{figure}
 	\centering
-	%\includegraphics[width=0.90\textwidth]{images/orb-slam-overview2.pdf}
-	\caption{An illustration of Track Lost soon after initialization (left), and Track Lost state (right)}
-	\label{fig:tracklost}
+	\subfloat[Track lost state]{\label{fig:lost}\includegraphics[width=0.90\linewidth]{images/track-lost-after-threshold}} \par
+	\subfloat[Track lost soon after initialization, system resetting.]{\label{fig:lost-reset}\includegraphics[width=0.90\linewidth]{images/Track-lost-soon-after-initialisation}}
+	\caption{LOST states of ORB-SLAM2}
 \end{figure}
 
-Trying to solve this problem a bottom-up workflow has been followed. %TODO in progress
+
+
+
+%TODO in progress
+Due to the randomicity with which the problem occurs, to identify the cause it's necessary isolate the problem as much as possible. For this purpose the first step has been sequentialize the execution between Tracking and Mapping blocks.
+
 
 
 

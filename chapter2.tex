@@ -93,7 +93,7 @@ Edge computing refers to the enabling technologies allowing computation to be pe
 \end{figure}
 
 
-\subsection{Performance metrics}
+\subsection{Performance Metrics}
 In edge computing, we have multiple layers with different computation capability. Workload allocation becomes a big
 issue. We need to decide which layer to handle the workload or how many tasks to assign at each part. There are multiple allocation strategies to complete a workload, for instances,
 evenly distribute the workload on each layer or complete as much as possible on each layer To choose an optimal allocation strategy, there several optimization parameter to consider. These metrics are very similar to those described in \ref{sec:deeplearning}, including latency, bandwidth and energy. How to measure these performance is strongly dependent by the environment, resources and application case.
@@ -139,7 +139,7 @@ The Isaac SDK is the main software toolkit provided by NVIDIA and allows develop
 The main reasons we would consider to use this platform reside in its high modularity and high performance solutions that it is able to offer on NVIDIA Jetson platforms.
 Others important reasons to adopt this solution are related the \textbf{C API} that allows the communication with Isaac apps from languages other than C++, and the \textbf{ROS bridge} that offers the capability to interact with ROS nodes applications.
 
-%TODO put an images that shows the Isaac architecture
+%TODO put an image that shows the Isaac architecture
 
 \subsection{CoppeliaSim}
 From the creators of V-Rep \cite{VREP}, CoppeliaSim \cite{coppeliaSim} seems to be the definitive solution for development of robotics applications.
@@ -150,13 +150,107 @@ CoppeliaSim can be used as a stand-alone application or can easily be embedded i
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Docker} %TODO
+\section{Docker} %TODO cite book
+While container technologies have been around for a long time, they’ve become more widely known with the rise of the Docker container platform. Docker was the first container system that made containers easily portable across different machines. It simplified the process of packaging up not only the application but also all its libraries and other dependencies, even the whole OS file system, into a simple, portable package that can be used to provision the application to any other machine running Docker. When you run an application packaged with Docker, it sees the exact filesystem contents that you’ve bundled with it. It sees the same files whether it’s running on your development machine or a production machine, even if it the production server is running a completely different Linux OS. The application won’t see anything from the server it’s running on, so it doesn’t matter if the server has a completely different set of installed libraries compared to your development machine.
+This is similar to creating a VM image by installing an operating system into a VM, installing the app inside it, and then distributing the whole VM image around and running it. Docker achieves the same effect, but instead of using VMs to achieve app isolation, it uses Linux container technologies to provide (almost) the same level of isolation that VMs do. Instead of using big monolithic VM images, it uses container images, which are usually smaller.
 
+\subsection{Understanding Docker Concepts}
+Docker is a platform for packaging, distributing, and running applications. As we’ve already stated, it allows you to package your application together with its whole environment. This can be either a few libraries that the app requires or even all the files that are usually available on the filesystem of an installed operating system. Docker makes it possible to transfer this package to a central repository from which it can then be transferred to any computer running Docker and executed there.
+Three main concepts in Docker comprise this scenario:
 
+\begin{itemize}
+	\item Images: A Docker-based container image is something you package your application and its environment into. It contains the filesystem that will be available to the application and other metadata, such as the path to the executable that should be executed when the image is run.
+	\item Registries: A Docker Registry is a repository that stores your Docker images and facilitates easy sharing of those images between different people and computers. When you build your image, you can either run it on the computer you’ve built it on, or you can push (upload) the image to a registry and then pull (download) it on another computer and run it there. Certain registries are public, allowing anyone to pull images from it, while others are private, only accessible to certain people or machines.
+	\item Containers: A Docker-based container is a regular Linux container created from a Docker-based container image. A running container is a process running on the host running Docker, but it’s completely isolated from both the host and all other processes running on it. The process is also resource-constrained, meaning it can only access and use the amount of resources (CPU, RAM, and so on) that are allocated to it.
+\end{itemize}
 
+Figure \ref{fig:dockerflow} shows all three concepts and how they relate to each other. The developer first builds an image and then pushes it to a registry. The image is thus available to anyone who can access the registry. They can then pull the image to any other machine running Docker and run the image. Docker creates an isolated container based on the image and runs the binary executable specified as part of the image.
+Docker images are composed of layers. Different images can contain the exact same layers because every Docker image is built on top of another image and two different images can both use the same parent image as their base. This speeds up the distribution of images across the network, because layers that have already been transferred as part of the first image don’t need to be transferred again when transferring the other image.
+But layers don’t only make distribution more efficient, they also help reduce the storage footprint of images. Each layer is only stored once. Two containers created from two images based on the same base layers can therefore read the same files, but if one of them writes over those files, the other one doesn’t see those changes. Therefore, even if they share files, they’re still isolated from each other. This works because container image layers are read-only. When a container is run, a new writable layer is created on top of the layers in the image. When the process in the container writes to a file located in one of the underlying layers, a copy of the whole file is created in the top-most layer and the process writes to the copy.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/dockerflow.pdf}
+	\caption{Docker images, registries, and containers}
+	\label{fig:dockerflow}
+\end{figure}
+
+\subsection{Portability Limitations of Container Images}
+In theory, a container image can be run on any Linux machine running Docker, but one small caveat exists, one related to the fact that all containers running on a host use the host’s Linux kernel. If a containerized application requires a specific kernel version, it may not work on every machine. If a machine runs a different version of the Linux kernel or doesn’t have the same kernel modules available, the app can’t run on it.
+
+While containers are much more lightweight compared to VMs, they impose certain constraints on the apps running inside them. VMs have no such constraints, because each VM runs its own kernel.
+
+And it’s not only about the kernel. It should also be clear that a containerized app built for a specific hardware architecture can only run on other machines that have the same architecture. It isn't possible containerize an application built for the x86 architecture and expect it to run on an ARM-based machine because it also runs Docker. You still need a VM for that.
+It is very important understand that Docker itself doesn’t provide process isolation. The actual isolation of containers is done at the Linux kernel level using kernel features such as Linux Namespaces and cgroups. Docker only makes it easy to use those features.
+
+%TODO inderire la parte di rete di docker
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Kubernetes} \label{kubernetesbackground} %TODO
+\section{Kubernetes} \label{kubernetesbackground}
+As the number of deployable application components in your system grows, it becomes harder to manage them all. Google was probably the first company that realized it needed a much better way of deploying and managing their software components and their infrastructure to scale globally. It’s one of only a few companies in the world that runs hundreds of thousands of servers and has had to deal with managing deployments on such a massive scale. This has forced them to develop solutions for making the development and deployment of thousands of software components manageable and cost-efficient.
+
+
+\subsection{What is Kubernetes}
+Kubernetes is a software system that allows you to easily deploy and manage containerized applications on top of it. It relies on the features of Linux containers to run heterogeneous applications without having to know any internal details of these applications and without having to manually deploy these applications on each host. Because these apps run in containers, they don’t affect other apps running on the same server, which is critical when you run applications for completely different organizations on the same hardware.
+Kubernetes enables you to run your software applications on thousands of computer nodes as if all those nodes were a single, enormous computer.
+Deploying applications through Kubernetes is always the same, whether your cluster contains only a couple of nodes or thousands of them. The size of the cluster makes no difference at all. Additional cluster nodes simply represent an additional amount of resources available to deployed apps.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/kubernetesmain.pdf}
+	\caption{Kubernetes exposes the whole datacenter as a single deployment platform}
+	\label{fig:kubernetesmain}
+\end{figure}
+
+Figure \ref{fig:kubernetesmain} shows the simplest possible view of a Kubernetes system. The system is com- posed of a master node and any number of worker nodes. When the developer sub- mits a list of apps to the master, Kubernetes deploys them to the cluster of worker nodes. What node a component lands on doesn’t (and shouldn’t) matter—neither to the developer nor to the system administrator.
+
+\subsection{Architecture of a Kubernetes cluster}
+At the hardware level, a Kubernetes cluster is composed of many nodes, which can be split into two types. 
+The fisrt is the \textit{Control Plane} that is what controls the cluster and makes it function. It consists of multiple components that can run on a single master node or be split across multiple nodes and replicated to ensure high availability. These components are:
+
+\begin{itemize}
+	\item The Kubernetes \textit{API Server}, which you and the other Control Plane components communicate with.
+	\item The \textit{Scheduler}, which schedules your apps (assigns a worker node to each deployable component of your application).
+	\item The \textit{Controller Manager}, which performs cluster-level functions, such as replicating components, keeping track of worker nodes, handling node failures, and so on.
+	\item \textit{etcd}, a reliable distributed data store that persistently stores the cluster configuration. 
+\end{itemize}
+The components of the Control Plane hold and control the state of the cluster, but they don’t run your applications. This is done by the (worker) nodes.
+The worker nodes are the machines that run your containerized applications. The task of running, monitoring, and providing services to your applications is done by the following components:
+\begin{itemize}
+	\item Docker, rkt, or another container runtime, which runs your containers.
+	\item The Kubelet, which talks to the API server and manages containers on its node.
+	\item The Kubernetes Service Proxy (kube-proxy), which load-balances network traffic
+	between application components.
+\end{itemize}
+Figure \ref{fig:kubecluster} shows the components running on these two sets of nodes.
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/kubecluster.pdf}
+	\caption{The components that make up a Kubernetes cluster}
+	\label{fig:kubecluster}
+\end{figure}
+
+
+
+\subsection{Running an application in Kubernetes}
+To run an application in Kubernetes, you first need to package it up into one or more container images, push those images to an image registry, and then post a description of your app to the Kubernetes API server.
+
+The description includes information such as the container image or images that contain your application components, how those components are related to each other, and which ones need to be run co-located (together on the same node) and which don’t. For each component, you can also specify how many copies (or replicas) you want to run. Additionally, the description also includes which of those components provide a service to either internal or external clients and should be exposed through a single IP address and made discoverable to the other components.
+When the API server processes your app’s description, the Scheduler schedules the specified groups of containers onto the available worker nodes based on computational resources required by each group and the unallocated resources on each node at that moment. The Kubelet on those nodes then instructs the Container Runtime (Docker, for example) to pull the required container images and run the containers.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/kubedockeroverview.pdf}
+	\caption{A basic overview of the Kubernetes architecture and an application running on top of it}
+	\label{fig:kubedockeroverview}
+\end{figure}
+
+Examine figure \ref{fig:kubedockeroverview} to gain a better understanding of how applications are deployed in Kubernetes. The app descriptor lists four containers, grouped into three sets (these sets are called pods). The first two pods each contain only a single container, whereas the last one contains two. That means both containers need to run co-located and shouldn't be isolated from each other. Next to each pod, you also see a number representing the number of replicas of each pod that need to run in parallel. After submitting the descriptor to Kubernetes, it will schedule the specified number of replicas of each pod to the available worker nodes. The Kubelets on the nodes will then tell Docker to pull the container images from the image registry and run the containers.
+
+
+
 
 
 
