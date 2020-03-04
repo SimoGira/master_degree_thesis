@@ -1,4 +1,7 @@
 \chapter{Methodology} \label{chap:methodology}
+
+% 
+
 This chapter will present a multi-level model design flow for the integration of heterogeneous applications and their deployment to the edge on embedded low power devices like NVIDIA Jetson TX2.
 
 
@@ -8,7 +11,7 @@ After an accurate comparison among all available robotics platforms, for the pur
 
 \subsection{Architecture at L1}
 At this architecture level we put a whole ROS-based system on a single Intel x86 powered machine that we will conventionally call \textit{Host}. 
-This is the simplest and the most common architecture used by robotics researches. As we can see in figure \ref{fig:l1arch}, in this case we have two main ROS nodes that communicate between them. Specifically speaking, in this case we have both ORB-SLAM2, which we talked about in the previous chapter, and a hybrid motion planner integrating global voronoi diagrams and local velocity obstacle method (VOVD \cite{VOVD}). Both applications are running as ROS nodes to perform a mobile robot 2D navigation task.
+This is the simplest and the most common architecture used by robotics researches. As shown in figure \ref{fig:l1arch}, in this case there are two main ROS nodes that communicate between them. Specifically speaking, there are both ORB-SLAM2, explained in the previous chapter, and a hybrid motion planner (VOVD \cite{VOVD}). Both applications are running as ROS nodes to perform a mobile robot 2D navigation task.
 
 \begin{figure}
 	\centering
