@@ -1,81 +1,137 @@
 \chapter{Methodology} \label{chap:methodology}
 
-% 
-
 This chapter will present a multi-level model design flow for the integration of heterogeneous applications and their deployment to the edge on embedded low power devices like NVIDIA Jetson TX2.
 
 
 \section{A ROS based robotic system}
 The choice of the most suitable integration platform is one of the main problems to be faced when integrating heterogeneous applications such as robotic software systems. This choice will have implications on performance and communication of the whole system. Furthermore it will be a key factor during the design phase of the entire architecture.
-After an accurate comparison among all available robotics platforms, for the purpose of our specific application we decided to use ROS \cite{ROS} in favour of its standard on communication among other applications.
+After an accurate comparison among all available robotics platforms, for the purpose of the specific application developed in this thesis it has been decided to use ROS \cite{ROS} in favour of its standard on communication among other robotic applications.
 
-\subsection{Architecture at L1}
-At this architecture level we put a whole ROS-based system on a single Intel x86 powered machine that we will conventionally call \textit{Host}. 
-This is the simplest and the most common architecture used by robotics researches. As shown in figure \ref{fig:l1arch}, in this case there are two main ROS nodes that communicate between them. Specifically speaking, there are both ORB-SLAM2, explained in the previous chapter, and a hybrid motion planner (VOVD \cite{VOVD}). Both applications are running as ROS nodes to perform a mobile robot 2D navigation task.
 
-\begin{figure}
+The design flow proposed in this work is composed of three bottom-up architecture levels, but the same methodology can be applied with more levels.
+The purpose of this methodology is to bring an heterogeneous application within an orchestration system such as Kubernetes, and then extend it to the edge computing. % embedded systems
+The architecture are explained in the next sections.
+
+
+
+
+\section{First level architecture}
+This is the first architecture to start with.
+At this architecture level the purpose is to verify the functioning of the whole system with the only ROS capabilities on a single powerful machine. A simple scheme of this architecture is shown in figure \ref{fig:l1arch}.
+
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{images/L1-arch}
 	\caption{L1 architecture}
 	\label{fig:l1arch}
 \end{figure}
 
-Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because of VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \textit{tf2} package \cite{tfros} due to the deprecation of the \textit{tf} package functions previously used. 
-Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo}. The problem was that it came with a featureless map generated from an URDF file, and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
-Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, thus no others operations have been required to complete our first architecture level.
-%TODO a questo livello di architettura è possbile fare una verifica funzionale del sistema
+The first step to realize this architecture is to wrap your (heterogeneous) applications with the ROS conformance protocol advertises and callbacks. An example of this operation is provided in listings \ref{lst:pub} and \ref{lst:sub}.
+In this way, all the applications that compose your system will be able to communicate among them following the standard communication based on ROS.
+The ROS nodes (publishers and subscribers) communicate between them through topics, thus it is necessary choice the right names of these topics and who will read/write on them.
+Once the applications are ready to run on ROS, they can be executed using a launchfile, where the user can specify a set of nodes to launch and their parameters.
+Another possibility is invoke the \lstinline{rosrun} command for each node that have to be executed.
+
+
+\noindent\begin{minipage}{.475\textwidth}
+\begin{lstlisting}[numbers=none,caption=Publisher,frame=tlrb, label=lst:pub]{Name}
+#include "ros/ros.h"
+...
+int main(int argc, char **argv) {
+ ros::init(argc, argv, "nodeA");
+ ros::NodeHandle n;
+ ros::Publisher pub;
+ pub=n.advertise<T>("topicA",10);
+ while (ros::ok()) {
+  <put here your application>
+  ...
+  pub.publish(msg);
+ }
+ return 0;
+}
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.475\textwidth}
+\begin{lstlisting}[numbers=none,caption=Subscriber,frame=tlrb,label=lst:sub]{Name}
+#include "ros/ros.h"
+...
+void subCallback(const <T> msg) {
+ <do stuff with received message>
+}
+
+int main(int argc, char **argv) {
+ ros::init(argc, argv, "nodeB");
+ ros::NodeHandle n;
+ ros::Subscriber sub;
+ sub=n.subscribe("topicA",10,subCall);
+ ...
+ return 0;
+}
+\end{lstlisting}
+\end{minipage}
+\\
+
+
+Commands such as \lstinline{rostopic nodes} and \lstinline{rostopic list} can be used to verify the correct communication between the nodes that compose the system.
+There exist more other tools to better inspect an application based on ROS, and they are all available online on ROS documentation.
+A good practise for performance measurement in ROS is to use profilers such as: \lstinline{perf}, \lstinline{gprof} and \lstinline{callgrind}. \lstinline{Rqt_top} is another profiler tool available in ROS, but it doesn't seem very stable and precise yet. Nevertheless, the best choice still put some time points in your code and write the measured intervals on files.
 
 
 
-\subsection{Architecture at L2} %TODO Work in progress
-Another common architecture in robotics, involves the distribution of ROS nodes on different hadware platforms (e.g. NVIDIa Jetson or Raspberry). 
-This step requires the split of our system in two parts: \textit{Host} (with Gazebo simulator) and \textit{Device/s} (robot navigation node/s). For this purpose, due to the several interconnected nodes, each of which having many parameters, it is raccomanded create a roslaunch file  using the \textit{machine tag}. These tags allow control over which nodes run on which machines, for load-balancing and bandwidth management. Fig. \ref{fig:l2arch} show an example of this confguration. At this architecture level the main focus is on the communication between the \textit{Host}, that act as Master, and the other external  nodes that rappresent the slaves. It is important to verify that the system continue working properly and that the Network doesn't become a bottleneck. For example, if we need to transfer a stream of images from one ROS nodes to another that is running on different machine, we should compress the images before send them over the netowork. In this way we avoid to saturate the bandwith of the network.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{images/L2-arch}
-	\caption{L2 architecture}
-	\label{fig:l2arch}
-\end{figure}
+\section{Second level architecture}
+Once the system is working properly on a single x86 host machine, it is possible to split it deploying manually the ROS nodes on a low power embedded device.
+Again, it is necessary pay attention on communication between nodes, because now they are on different machines and they need to communicate between them.
 
 
+It would be preferable to have the control over which nodes run on which machines, for load-balancing and bandwidth management.
+Intuitively a user would duplicate the roslaunch files and comment them in a mutually exclusive way, such that the nodes that run on a machine, don't run on the other. Even if it could work correctly, this kind of hard-coding is not the best practice for this purpose, especially for large projects. The recommanded way for this purpose, is taking advantage of the tag machine explained in the ROS documentation.
 
 
-\subsection{Architecture at L3}	%TODO questo non lo abbiamo fatto ma lo mettiamo lo stesso.
-Finally the last tipical architecture level is composed by \textit{Host}, \textit{Device/s } and  \textit{Robot/s}. If the previous step have been properly done, this one should be completely 
-transparent with respect to the entire system. 
-As we can see in Fig. \ref{fig:l3arch}, the simulator has been removed from the \textit{Host} and it is replaced by the real robot, on which one or more embedded devices are attached.
-To achive this goal ... 
-%TODO chiedere a piccinelli qual'è la modifica da fare per eseguire i comandi sul robot anziché sul simulatore
-
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{images/L3-arch}
-	\caption{L3 architecture}
-	\label{fig:l3arch}
-\end{figure}
-
-
-\section{Deployment from the cloud to the edge} % How to prepare an application for edge computing in Kubeedge?
-As mentioned in \ref{kubeedgebackground}, Kubeedge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, your applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing your components is a requirement for Kubernetes, it also allow easy scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics make it possible to package your applications so that they run smoothly on Kubernetes. In this section it will described the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of Kubeedge.
-
-
-\subsection{VOVD at the edge}
-%TODO Dockerfile di VOVD 
-%TODO Problemi in fase di building del container --> ROS network comunication
-
-
-\subsection{ORB-SLAM2 at the edge}
-%TODO Dockerfile di ORB_SLAM2 
-%TODO Problemi in fase di building del container --> ROS + GPU (TRT)
-
-\section{The whole system on Kubeedge}
-%TODO Once we have containerized our applications we are ready to deploy them from the cloud to the edge with kubeedge: L1, L2, L3 ?!.
+If the roslaunch files have been properly defined, the only thing to do is ...
 
 
 
-\section{Discussion}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Third level architecture}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
