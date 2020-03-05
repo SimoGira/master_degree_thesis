@@ -47,8 +47,8 @@ This is the simplest and the most common architecture used by robotics researche
 	\label{fig:l1archexp}
 \end{figure}
 
-Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because of VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \textit{tf2} package \cite{tfros} due to the deprecation of the \textit{tf} package functions previously used. 
-Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo}. The problem was that it came with a featureless map generated from an URDF file, and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
+Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because of VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \mintinline{cpp}{tf2} package \cite{tfros} due to the deprecation of the \mintinline{cpp}{tf} package functions previously used. 
+Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo}. The problem was that it came with a featureless map generated from an ``.urdf'' file, and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
 Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, thus no others operations have been required to complete our first architecture level.
 %TODO a questo livello di architettura è possbile fare una verifica funzionale del sistema...
 
@@ -71,7 +71,7 @@ This step requires the split of our system in two parts: \textit{Host} (with Gaz
 \subsection{Architecture at L3}	%TODO questo non lo abbiamo fatto ma lo mettiamo lo stesso.
 Finally the last typical architecture level is composed by \textit{Host}, \textit{Device/s } and  \textit{Robot/s}. If the previous step have been properly done, this one should be completely 
 transparent with respect to the entire system. 
-As we can see in Fig. \ref{fig:l3arch}, the simulator has been removed from the \textit{Host} and it is replaced by the real robot, on which one or more embedded devices are attached.
+As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it is replaced by the real robot, on which one or more embedded devices are attached.
 To achieve this goal ... 
 %TODO chiedere a piccinelli qual'è la modifica da fare per eseguire i comandi sul robot anziché sul simulatore
 
@@ -80,7 +80,7 @@ To achieve this goal ...
 	\centering
 	\includegraphics[width=\textwidth]{images/L3-arch}
 	\caption{L3 architecture}
-	\label{fig:l3arch}
+	\label{fig:l3archexp}
 \end{figure}
 
 
@@ -157,43 +157,43 @@ As mentioned in \ref{kubeedgebackground}, Kubeedge is built upon Kubernetes and 
 
 
 \section{Results}
-\begin{table}[ht!]
-	\resizebox{\linewidth}{!}{%
-		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
-			\hline
-			\hspace{3mm} Setup & Odom VOVD (ms) & Track Pipe (ms) & Decompression (ms) & Frame Elaboration (ms) & Feature Extraction (ms) & Supported (FPS)  \\ 
-			\hline
-			\rowcolor{Gray}
-			\multicolumn{7}{|c|}{Performance Measurement: camera 10 Hz}  \\
-			\hline
-			orb(j1)     					 &	-  		  & 43.41 & 13.08  & 49.21 & 43.62 & 20.32   \\ \hline
-			vovd(j1)       	 			  & 1.70  & -     	 	 & -    		 & -     		& -    		   & -     		  \\ \hline
-			(orb;vovd)(j1)      	& 2.58 	& 73.49 & 18.69  & 62.70 & 54.76  & 13.61 	 \\ \hline
-			(orb(j1);vovd(j2))  & 1.60 	& 49.81 & 13.53  & 49.25 & 43.01  & 20.08	 \\ \hline
-			\rowcolor{Gray}
-			\multicolumn{10}{|c|}{Performance Measurement: camera 20 Hz}  \\
-			\hline
-			orb(j1)     					 &   -  	 & 54.82 & 14.47 & 49.40 & 44.35 &18.24 	 \\ \hline
-			vovd(j1)       	 			  & 1.70 & -     		& -     	   & -     		 & -     		& -     			 \\ \hline
-			(orb;vovd)(j1)      	& 2.85 & 93.15 & 23.96 & 67.99 & 60.41 & 10.74 		\\ \hline
-			(orb(j1);vovd(j2))  & 1.60 & 56.20 & 14.00 & 49.32 & 43.95 & 17.79 		\\ \hline
-			\rowcolor{Gray}
-			\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 10 Hz}  \\
-			\hline
-			orb(j1)     					& -    		 & 47.28 & 12.78  & 40.52 & 36.02 & 21.15 	 \\ \hline
-			vovd(j1)       	 			  & 1.30 & -     		& -     	   & -     		  & -     		 & -     		   \\ \hline
-			(orb;vovd)(j1)      	& 1.40 & 82.47 & 15.10  & 53.54 & 48.09 & 12.12		\\ \hline
-			(orb(j1);vovd(j2))  & 1.38 & 50.83 & 13.98  & 43.80 & 38.04 & 19.67		\\ \hline
-			\rowcolor{Gray}
-			\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 20 Hz}  \\
-			\hline
-			orb(j1)     					 & -    	 & 50.20 & 16.20 & 42.16 & 34.82 & 19.92  \\ \hline
-			vovd(j1)       	 			  & 1.21 & -			& -     	   & -     		 & -     		& -     		\\ \hline
-			(orb;vovd)(j1)      	& 1.43 & 70.54 & 15.02  & 55.60 & 50.24 & 14.18  \\ \hline
-			(orb(j1);vovd(j2))  & 1.26 & 58.14 & 13.52  & 42.34 & 37.17 & 17.20  \\ \hline
-	\end{tabular}}
-	\caption{Performance Measurement\label{tab:Performance-Measurement}}
-\end{table}
+%\begin{table}[ht!]
+%	\resizebox{\linewidth}{!}{%
+%		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
+%			\hline
+%			\hspace{3mm} Setup & Odom VOVD (ms) & Track Pipe (ms) & Decompression (ms) & Frame Elaboration (ms) & Feature Extraction (ms) & Supported (FPS)  \\ 
+%			\hline
+%			\rowcolor{Gray}
+%			\multicolumn{7}{|c|}{Performance Measurement: camera 10 Hz}  \\
+%			\hline
+%			orb(j1)     					 &	-  		  & 43.41 & 13.08  & 49.21 & 43.62 & 20.32   \\ \hline
+%			vovd(j1)       	 			  & 1.70  & -     	 	 & -    		 & -     		& -    		   & -     		  \\ \hline
+%			(orb;vovd)(j1)      	& 2.58 	& 73.49 & 18.69  & 62.70 & 54.76  & 13.61 	 \\ \hline
+%			(orb(j1);vovd(j2))  & 1.60 	& 49.81 & 13.53  & 49.25 & 43.01  & 20.08	 \\ \hline
+%			\rowcolor{Gray}
+%			\multicolumn{10}{|c|}{Performance Measurement: camera 20 Hz}  \\
+%			\hline
+%			orb(j1)     					 &   -  	 & 54.82 & 14.47 & 49.40 & 44.35 &18.24 	 \\ \hline
+%			vovd(j1)       	 			  & 1.70 & -     		& -     	   & -     		 & -     		& -     			 \\ \hline
+%			(orb;vovd)(j1)      	& 2.85 & 93.15 & 23.96 & 67.99 & 60.41 & 10.74 		\\ \hline
+%			(orb(j1);vovd(j2))  & 1.60 & 56.20 & 14.00 & 49.32 & 43.95 & 17.79 		\\ \hline
+%			\rowcolor{Gray}
+%			\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 10 Hz}  \\
+%			\hline
+%			orb(j1)     					& -    		 & 47.28 & 12.78  & 40.52 & 36.02 & 21.15 	 \\ \hline
+%			vovd(j1)       	 			  & 1.30 & -     		& -     	   & -     		  & -     		 & -     		   \\ \hline
+%			(orb;vovd)(j1)      	& 1.40 & 82.47 & 15.10  & 53.54 & 48.09 & 12.12		\\ \hline
+%			(orb(j1);vovd(j2))  & 1.38 & 50.83 & 13.98  & 43.80 & 38.04 & 19.67		\\ \hline
+%			\rowcolor{Gray}
+%			\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 20 Hz}  \\
+%			\hline
+%			orb(j1)     					 & -    	 & 50.20 & 16.20 & 42.16 & 34.82 & 19.92  \\ \hline
+%			vovd(j1)       	 			  & 1.21 & -			& -     	   & -     		 & -     		& -     		\\ \hline
+%			(orb;vovd)(j1)      	& 1.43 & 70.54 & 15.02  & 55.60 & 50.24 & 14.18  \\ \hline
+%			(orb(j1);vovd(j2))  & 1.26 & 58.14 & 13.52  & 42.34 & 37.17 & 17.20  \\ \hline
+%	\end{tabular}}
+%	\caption{Performance Measurement\label{tab:Performance-Measurement}}
+%\end{table}
 
 
 
