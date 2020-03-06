@@ -5,6 +5,8 @@ This chapter will present a multi-level model design flow for the integration of
 
 \section{A ROS based robotic system}
 The choice of the most suitable integration platform is one of the main problems to be faced when integrating heterogeneous applications such as robotic software systems. This choice will have implications on performance and communication of the whole system. Furthermore it will be a key factor during the design phase of the entire architecture.
+
+%TODO da dire meglio non dire "caso specifico" bisogna stare generici.
 After an accurate comparison among all available robotics platforms, for the purpose of the specific application developed in this thesis it has been decided to use ROS \cite{ROS} in favour of its standard on communication among other robotic applications.
 
 
@@ -16,19 +18,21 @@ The architecture are explained in the next sections.
 
 
 \section{First level architecture}
-This is the first architecture to start with.
+This is the first architecture to start with and the most common used by robotics researches and developers.
 At this architecture level the purpose is to verify the functioning of the whole system with the only ROS capabilities on a single powerful machine. A simple scheme of this architecture is shown in figure \ref{fig:l1arch}.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{images/L1-arch}
-	\caption{L1 architecture}
+	\caption{A general architecture at L1}
 	\label{fig:l1arch}
 \end{figure}
 
 The first step to realize this architecture is to wrap your (heterogeneous) applications with the ROS conformance protocol advertises and callbacks. An example of this operation is provided in listings \ref{lst:pub} and \ref{lst:sub}.
-In this way, all the applications that compose your system will be able to communicate among them following the standard communication based on ROS.
-The ROS nodes (publishers and subscribers) communicate between them through topics, thus it is necessary choice the right names of these topics and who will read/write on them.
+In this way, all the applications that compose your system will be able to interact following the standard communication based on ROS.
+The ROS nodes (publishers and subscribers) communicate between them through virtal channels called topics, thus it is necessary choice the right names of these topics and who will read/write on them.
+Note that with reference to the  scheme presented in figure \ref{fig:l1arch}, among the other components, there is a robot simulator which have to simulate an industrial robot controller that adheres to the ROS-Industrial driver specification. It means that, for the simulator, we shouldn't choose names and properties of his topics different than the topics published from the robot we are going to develop on.
+
 Once the applications are ready to run on ROS, they can be executed using a launchfile, where the user can specify a set of nodes to launch and their parameters.
 Another possibility is invoke the \mintinline{bash}{rosrun} command for each node that have to be executed.
 
@@ -96,7 +100,7 @@ A good practise for performance measurement in ROS is to use profilers such as: 
 
 \section{Second level architecture}
 Once the system is working properly on a single x86 host machine, it is possible to split it deploying manually the ROS nodes on a low power embedded device.
-Again, it is necessary pay attention on communication between nodes, because now they are on different machines and they need to communicate between them.
+Again, it is necessary pay attention on communication between nodes, because now they are on different machines and they need to communicate between them through a physical network layer.
 
 It would be preferable to have the control over which ROS nodes run on which machines, for load-balancing and bandwidth management.
 Intuitively a user would duplicate the roslaunch files and comment them in a mutually exclusive way, such that the nodes that run on a machine, don't run on the other. Even if it could work correctly, this kind of hard-coding is not the best practice for this purpose, especially for large projects. The recommanded way is to use machine tags to balance load and control which nodes run on the same machine, and consider having the machine file name depend on an environment variable for reusability.
@@ -119,6 +123,12 @@ Finally, if the roslaunch files have been properly defined as described above, t
 
 
 %TODO put here an example of general architecture at L2
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/L2-arch}
+	\caption{A general architecture at L2}
+	\label{fig:l2arch}
+\end{figure}
 
 
 Once again it is very important measure the performance of our system, because we will in the next sections that they will be critical for a correct orchestration of the system.
@@ -127,13 +137,15 @@ Once again it is very important measure the performance of our system, because w
 \section{Third level architecture}
 This is the final architecture level. As shown in figure \ref{fig:l3arch} the simulator has been removed and it has been replaced by the real robot.
 
+The difference respect to the previous architecture level is that there there is one or more driver node that communicate with a piece of hardware and it must run on the machine to which the hardware is physically connected.
+If the simulator  at L1 has been properly designed and configured, in order to have the system running on the real robot it's enough remove the simulator from the ROS netowrk and attach the robot instead. This operation depend to the physical infrastructure of the netwrok we are on. 
 
-Here the difference respect to the previous architecture level is that there is one or more driver node that communicate with a piece of hardware and it must run on the machine to which the hardware is physically connected.
-
-% chiedere a Piccinelli per maggiore contenuto a riguardo.
-
-
-
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/L3-arch}
+	\caption{A general architecture at L3}
+	\label{fig:l3arch}
+\end{figure}
 
 
 \section{Deploying the system at the edge}
@@ -194,7 +206,8 @@ The first is that in order to properly source the ROS packages for our applicati
 
 \begin{minted}[breaklines, breakafter=isource]{bash}
 RUN . "/opt/ros/$ROS_DISTRO/setup.sh" && sed -i -e '$isource "$CATKIN_WS/devel/setup.bash"' /ros_entrypoint.sh
-\end{minted}
+\end{minted}
+
 
 Some official ROS images available on the Docker Hub, come already provided of the \textit{ros\_entrypoint} script indicated above. In case it is missing, it is very simple create it in the root of the file system's image. In this way, when a container is starting, before run the \mintinline{bash}{CMD} command, it will source all the necessary ROS packages previously installed within the image.
 
