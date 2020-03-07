@@ -72,13 +72,33 @@ As shown in figure \ref{fig:l1archexp}, in this case there are two main ROS node
 \end{figure}
 
 Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because of VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \mintinline{cpp}{tf2} package \cite{tfros} due to the deprecation of the \mintinline{cpp}{tf} package functions previously used. 
-Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo} simulator. The problem was that it came with a featureless map generated from an ``.urdf'' file, and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map.
+Another modification done talking about VOVD is related to the 3D map used by Gazebo \cite{Gazebo} simulator. The problem was that it came with a featureless map generated from an ``.pgm'' file (see fig. \ref{fig:mapfile}, and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map. A comparison of the 3D map before and after this change is visible in figure \ref{fig:3Dmapcomparison}.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/icelabmap}
+	\caption{pgm file map description.}
+	\label{fig:mapfile}
+\end{figure}
+
 Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, thus no others operations have been required to complete our first architecture level.
+	
+
+\begin{figure*}
+	\centering
+	\subfloat[Map with features    \label{fig_first_case}]{\includegraphics[width=2.4in]{images/orb-featureless-ed.png}}
+	\hfil
+	\subfloat[Map without features   \label{fig_second_case}]{\includegraphics[width=2.4in]{images/orb-features-ed.png}}
+	%
+	\caption{3D map comparison}
+	\label{3Dmapcomparison}
+\end{figure*}
+
 
 Thanks to the modularity of ROS we are able to verify the functional behaviour of the system implementing  a custom ROS node that act as a monitor. It listen on all topics of the system and capture the informations of interest.  
 To obtain a more accurate performance measurement, we added some time points within the source code of both VOVD and ORB-SLAM2. Specifically speacking for VOVD we measure the time to perform the local planner computation. To the ORB-SLAM2 side instead we measure the time to elaborate each frame coming frome the simulator camera.
 The performance measurement obtained at this architecture level are shown in table \ref{tab:resultL1}.
-Note that, due to the modulairy of ROS, we are able to fine tune the system without make any change to the code. For example, we can easily change the frequency of the camera output or the number of the keypoints extracted for each incoming frame.
+Note that, due to the modulairy of ROS, we are able to fine tune the system without make any change to the code. For example, we can easily change either frequency of the camera output or the number of  keypoints extracted for each incoming frame.
 
 %TODO queste misuazioni non sono mai state fatte quindi farle al volo e riportare i valori aggiornati nella tabella 
 
@@ -158,11 +178,11 @@ Finally we reached the last architecture level of the design flow. It is compose
 
 
 
-If the previous step have been properly done, this one should be completely 
-transparent with respect to the entire system. 
-As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it is replaced by the real robot, on which one or more embedded devices are attached.
-To achieve this goal ... 
-%TODO chiedere a piccinelli qual'è la modifica da fare per eseguire i comandi sul robot anziché sul simulatore
+The keypoint is that if the simulator has been properly configured at L1 architecture (as described in chapter \ref{chap:methodology}),  the operation to detach the simulator and attach back the real robot should be completely transparent with respect to the entire system. This is one of the main advantage we can benefit due to the modularity of ROS.
+
+
+As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it is replaced by the real robot, on which one or more embedded devices can be attached.
+
 
 
 \begin{figure}
