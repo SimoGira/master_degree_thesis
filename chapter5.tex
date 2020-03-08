@@ -10,20 +10,20 @@ The main technicals specifications of the \textit{Host} and the embedded device 
 	\begin{tabularx}{\linewidth}{|l|X|}
 		\hline
 		\rowcolor{Gray}
-		Hardware         & Model                                   										   \\
+		Hardware         & Model \\
 		\hline
-		Processor        & Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz  \\
-		Storage          & SATA 500GiB                             									 \\
-		Memory           & 16GiB                                   											\\
-		GPU              & NVIDIA GeForce GTX 980                  						   \\
+		Processor        & Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz \\
+		Storage          & SATA 500GiB \\
+		Memory           & 16GiB \\
+		GPU              & NVIDIA GeForce GTX 980 \\
 		\hline
 		\rowcolor{Gray}
-		Software         & Version                                 											 \\
+		Software         & Version \\
 		\hline
-		Operating System & Ubuntu 18.04		                       						   \\
-		OpenCV           & 3.4.7                                  	 											\\
-		CUDA             & 10.0                                    												   \\
-		ROS              & Melodic Moreina                         									   \\
+		Operating System & Ubuntu 18.04 \\
+		OpenCV           & 3.4.7 \\
+		CUDA             & 10.0 \\
+		ROS              & Melodic Moreina \\
 		\hline
 	\end{tabularx}
 	\caption{Technical specifications of the Host \label{tab:tech-specs-host}}
@@ -77,7 +77,7 @@ Another modification done talking about VOVD is related to the 3D map used by Ga
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{images/icelabmap}
-	\caption{pgm file map description.}
+	\caption{pgm file map description of IceLab.}
 	\label{fig:mapfile}
 \end{figure}
 
@@ -90,15 +90,14 @@ Talking about ORB-SLAM2, it comes already provided with the necessaries function
 	\hfil
 	\subfloat[Map without features   \label{fig_second_case}]{\includegraphics[width=2.4in]{images/orb-features-ed.png}}
 	%
-	\caption{3D map comparison}
-	\label{3Dmapcomparison}
+	\caption{3D maps comparison}
+	\label{fig:3Dmapcomparison}
 \end{figure*}
 
 
 Thanks to the modularity of ROS we are able to verify the functional behaviour of the system implementing  a custom ROS node that act as a monitor. It listen on all topics of the system and capture the informations of interest.  
-To obtain a more accurate performance measurement, we added some time points within the source code of both VOVD and ORB-SLAM2. Specifically speacking for VOVD we measure the time to perform the local planner computation. To the ORB-SLAM2 side instead we measure the time to elaborate each frame coming frome the simulator camera.
+To obtain a more accurate performance measurement, we added some time points within the source code of both VOVD and ORB-SLAM2. Specifically speaking for VOVD we measure the time to perform the local planner computation. To the ORB-SLAM2 side instead we measure the time to elaborate each frame coming from the simulator camera.
 The performance measurement obtained at this architecture level are shown in table \ref{tab:resultL1}.
-Note that, due to the modulairy of ROS, we are able to fine tune the system without make any change to the code. For example, we can easily change either frequency of the camera output or the number of  keypoints extracted for each incoming frame.
 
 %TODO queste misuazioni non sono mai state fatte quindi farle al volo e riportare i valori aggiornati nella tabella 
 
@@ -106,25 +105,14 @@ Note that, due to the modulairy of ROS, we are able to fine tune the system with
 	\begin{tabularx}{\linewidth}{@{}l*{7}{C}c@{}}
 		\toprule
 		\hline
-		Setup              & Odom (ms) & Track Pipe (ms) & Dec. (ms) & Frame Elab. (ms) & Feature Ext.(ms) & Supp. (FPS) \\
+		Setup              & Odom (ms) & Track Pipe (ms) & Frame Elab. (ms) & Feature Ext.(ms) & Supp. (FPS) \\
 		\hline
-		\rowcolor{Gray}
-		\multicolumn{7}{c}{Performance Measurement: camera 10 Hz}                                                                                                                                           \\
-		\hline
-		orb(j1)            & -             & 43.41          & 13.08             & 49.21                 & 43.62                  & 20.32           \\ \hline
-		vovd(j1)           & 1.70          & -              & -                 & -                     & -                      & -               \\ \hline
-		(orb;vovd)(j1)     & 2.58          & 73.49          & 18.69             & 62.70                 & 54.76                  & 13.61           \\ \hline
-		(orb(j1);vovd(j2)) & 1.60          & 49.81          & 13.53             & 49.25                 & 43.01                  & 20.08           \\ \hline
-		\rowcolor{Gray}
-		\multicolumn{7}{c}{Performance Measurement: camera 20 Hz}                                                                                                                                           \\
-		\hline
-		orb(j1)            & -             & 54.82          & 14.47             & 49.40                 & 44.35                  & 18.24           \\ \hline
-		vovd(j1)           & 1.70          & -              & -                 & -                     & -                      & -               \\ \hline
-		(orb;vovd)(j1)     & 2.85          & 93.15          & 23.96             & 67.99                 & 60.41                  & 10.74           \\ \hline
-		(orb(j1);vovd(j2)) & 1.60          & 56.20          & 14.00             & 49.32                 & 43.95                  & 17.79           \\ \hline
+		orbslam            & -             & 18.52          & 24.09                 & 22.04                  & 41.45      \\ \hline
+		vovd           	   & 1.20          & -              & -                     & -                      & -          \\ \hline
+		(orb;vovd)     	   & 2.33          & 38.99          & 39.93                 & 36.75                  & 25.03      \\ \hline
 		\bottomrule
-\end{tabularx}
-\caption{\label{tab:resultL1}Performance measurement at L1 architecture.}
+	\end{tabularx}
+	\caption{\label{tab:resultL1}Performance measurement at L1 architecture.}
 \end{table}
 
 \subsection{Architecture at L2} %TODO Work in progress
@@ -141,10 +129,17 @@ Figure \ref{fig:l2arch-exp} show the configuration we setup during the experimen
 
 Due to the several interconnected nodes, each of which having many parameters, it is recommanded create a roslaunch file  using the \textit{machine tag}. As explained in chapter \ref{chap:methodology}, these tags allow control over which nodes run on which machines, for load-balancing and bandwidth management.
 
-At this architecture level the main focus is on the communication between the \textit{Host}, that act as Master, and the other external nodes that represent the slaves. It is important to verify that the system continue working properly and that the Network doesn't become a bottleneck. For example, if we need to transfer a stream of images from one ROS nodes to another that is running on different machine, we should compress each frame before send it over the network. In this way we avoid to saturate the bandwidth of the network. In this case the compression task is performed to the Host side from the aruco camera within Gazebo simulator. The decopression instead is computed on Jetson by the ORB-SLAM2 node whenever it receives a new frame to elaborate.
+At this architecture level the main focus is on the communication between the \textit{Host}, that act as Master, and the other external nodes that represent the slaves. It is important to verify that the system continue working properly and that the Network doesn't become a bottleneck. For example, if we need to transfer a stream of images from one ROS nodes to another that is running on different machine, we should compress each frame before send it over the network. In this way we avoid to saturate the bandwidth of the network. In this case the compression task is performed to the Host side from the aruco camera within Gazebo simulator. The decompression instead is computed on Jetson by the ORB-SLAM2 node whenever it receives a new frame to elaborate.
 Once again we measured the performance of the system in the same way we have done in the previous architecture level.
-Note that, as we expected, the performance of the ORB-SLAM2 are dropped down due to the computing capability of the Jetson. This is more highligted when we run both VOVD and ORB-SLAM2 on the same device because they are competing for the hardware resources.
+Note that, as we expected, the performance of the ORB-SLAM2 are dropped down due to the computing capability of the Jetson. This is more highlighted when we run both VOVD and ORB-SLAM2 on the same device because they are competing for the hardware resources.
 The new performance measurements are visible in table \ref{tab:resultL2}.
+Note that, due to the modularity of ROS, we are able to fine tune the system without modify to the code. For example, we can easily change either frequency of the camera output or the number of key-points extracted for each incoming frame.
+Another parameter to consider is the bandwidth of the network. The virtual Asus Xtion camera used by Gazebo publish images with a resolution of 1280*720*3 at 20 frame per second.
+Computers hooked up to LANs are connected using Cat5 cable. Although the Cat5 ethernet cable can handle up to 10/100 Mbps at a 100 MHz bandwidth, it is not sufficient to transfer the data coming from the camera because it requires a bandwidth of 442 Mps.
+This is reason we measured the data decompression time performed by the ORB-SLAM2 ROS node.
+
+
+
 
 \begin{table}[htbp]
 	\begin{tabularx}{\linewidth}{@{}l*{7}{C}c@{}}
@@ -176,16 +171,13 @@ The new performance measurements are visible in table \ref{tab:resultL2}.
 \subsection{Architecture at L3}	%TODO questo non lo abbiamo fatto ma lo mettiamo lo stesso.
 Finally we reached the last architecture level of the design flow. It is composed by the \textit{Host}, \textit{Device/s } and the real robot \textit{Robot/s}. In our case the real robot is the KUKA YouBot \cite{YouBot} provided by the robotics laboratory ALTAIR  from university of Verona.
 
+The key point here is that if the simulator has been properly configured at L1 architecture (as described in chapter \ref{chap:methodology}),  the operation to detach the simulator and attach back the real robot should be completely transparent with respect to the entire system. This is one of the main advantage we can benefit due to the modularity of ROS.
 
-
-The keypoint is that if the simulator has been properly configured at L1 architecture (as described in chapter \ref{chap:methodology}),  the operation to detach the simulator and attach back the real robot should be completely transparent with respect to the entire system. This is one of the main advantage we can benefit due to the modularity of ROS.
-
-
-As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it is replaced by the real robot, on which one or more embedded devices can be attached.
+As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it has been replaced by the real robot, on which one or more embedded devices can be attached.
 
 
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{images/L3-arch}
 	\caption{L3 architecture}
@@ -194,16 +186,17 @@ As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from t
 
 
 \section{Deployment from the cloud to the edge} % How to prepare an application for edge computing in Kubeedge?
-As mentioned in \ref{kubeedgebackground}, Kubeedge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, your applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing your components is a requirement for Kubernetes, it also allow easy scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics make it possible to package your applications so that they run smoothly on Kubernetes. In this section it will described the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of Kubeedge.
+As mentioned in section \ref{sec:kubeedgebackground}, Kubeedge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, your applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing your components is a requirement for Kubernetes, it also allow easy scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics make it possible to package your applications so that they run smoothly on Kubernetes.
+In this section it will described the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of Kubeedge.
 
 
-\subsection{VOVD at the edge}
+\subsection{Dockerization}
 %TODO Dockerfile di VOVD 
 %TODO Problemi in fase di building del container --> ROS network comunication
+At this point the main goal of the project is to reach the edge devices from the host/cloud server wherever they are.
 
 
-\subsection{ORB-SLAM2 at the edge}
-%TODO Dockerfile di ORB_SLAM2 
+
 %TODO Problemi in fase di building del container --> ROS + GPU (TRT)
 
 \section{The whole system on Kubeedge}

@@ -149,7 +149,7 @@ If the simulator  at L1 has been properly designed and configured, in order to h
 
 
 \section{Deploying the system at the edge}
-The next step is prepare the system for automatic deployment at the edge. For this purpose we need: first a container platform with which containerize the nodes that compose the system, nad then we need for an orchestration platform to automatize the deployment over the cluster of embedded devices.
+The next step is prepare the system for automatic deployment at the edge. For this purpose we need: first a container platform with which containerize the nodes that compose the system, and then we need for an orchestration platform to automatize the deployment over the cluster of embedded devices.
 
 \subsection{Containerization with Docker}
 The use of containers to deploy applications is called containerization. Containers are not new, but their use for easily deploying applications is.
@@ -303,7 +303,7 @@ modules:
 This configuration file is suitable for beginners, but a more advances configuration can be generate using \mintinline{bash}{--defaultconfig} flag instead.
 The most important lines to pay attention in the listing above, are line 4, where e have to type the right path to the configuration file generating during the kubernetes cluster creation. And line 16 in winch we have to write the (static) ip address of the master node where the cloudcore will run.
 
-To the edge side, the procedure to generate the \textit{edgeconfig.yaml} configuration file is the same of the cloudside: either create a minimal configuration with command \mintinline{bash}{edgecore --minconfig} or a full configuration with command \mintinline{bash}{edgecore --defaultconfig}. It's content is slightly different instead:
+To the edge side, the procedure to generate the \textit{edgeconfig.yaml} configuration file is the same of the cloud side: either create a minimal configuration with command \mintinline{bash}{edgecore --minconfig} or a full configuration with command \mintinline{bash}{edgecore --defaultconfig}. It's content is slightly different instead:
 
 
 \begin{minted}[
@@ -353,10 +353,10 @@ modules:
 \end{minted}
 
 
-In this case the lines to pay attention are line 13, where we have to write the node name (necessary for deployments). Line 15 where we have to type (static) ip address of the edge node. Finally the line is the ip and port where the server socker of the master node is listening on, and it must to be the same of line 16 in the \textit{cloudconfig.yaml}.
+In this case the lines to pay attention are line 13, where we have to write the node name (necessary for deployments). Line 15 where we have to type (static) ip address of the edge node. Finally the line is the ip and port where the server socket of the master node is listening on, and it must to be the same of line 16 in the \textit{cloudconfig.yaml}.
 
 Now, that the cluster is set up, we are ready to write the last three configuration files necessary for the device controller in order to automatically deploy our containerized applications to the edge nodes.
-The device controller is the cloud component of KubeEdge which is responsible for device management. Device management in KubeEdge is implemented by making use of Kubernetes Custom Resource Definitions (CRDs) to describe device metadata/status and device controller to synchronize these device updates between edge and cloud. The device controller starts two separate goroutines called \textit{upstream controller} and \textit{downstream controller}. These are not separate controllers as such but named here for clarity.
+The device controller is the cloud component of KubeEdge which is responsible for device management. Device management in KubeEdge is implemented by making use of Kubernetes Custom Resource Definitions (CRDs) to describe device metadata/status and device controller to synchronize these device updates between edge and cloud. The device controller starts two separate go-routines called \textit{upstream controller} and \textit{downstream controller}. These are not separate controllers as such but named here for clarity.
 The device controller makes use of device model and device instance to implement device management :
 A device model describes the device properties exposed by the device and property visitors to access these properties. A device model is like a reusable template using which many devices can be created and managed. A device instance represents an actual device object. It is like an instantiation of the device model and references properties defined in the model. The device spec is static while the device status contains dynamically changing data like the desired state of a device property and the state reported by the device.
 Generally the steps to address these requirements are the following:
