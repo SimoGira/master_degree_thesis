@@ -97,9 +97,7 @@ Talking about ORB-SLAM2, it comes already provided with the necessaries function
 
 Thanks to the modularity of ROS we are able to verify the functional behaviour of the system implementing  a custom ROS node that act as a monitor. It listen on all topics of the system and capture the informations of interest.  
 To obtain a more accurate performance measurement, we added some time points within the source code of both VOVD and ORB-SLAM2. Specifically speaking for VOVD we measure the time to perform the local planner computation. To the ORB-SLAM2 side instead we measure the time to elaborate each frame coming from the simulator camera.
-The performance measurement obtained at this architecture level are shown in table \ref{tab:resultL1}.
-
-%TODO queste misuazioni non sono mai state fatte quindi farle al volo e riportare i valori aggiornati nella tabella 
+The performance measurement obtained at this architecture level are shown in table \ref{tab:resultL1-exp}.
 
 \begin{table}[htbp]
 	\begin{tabularx}{\linewidth}{@{}l*{7}{C}c@{}}
@@ -112,10 +110,10 @@ The performance measurement obtained at this architecture level are shown in tab
 		(orb;vovd)     	   & 2.33          & 38.99          & 39.93                 & 36.75                  & 25.03      \\ \hline
 		\bottomrule
 	\end{tabularx}
-	\caption{\label{tab:resultL1}Performance measurement at L1 architecture.}
+	\caption{\label{tab:resultL1-exp}Performance measurement at L1 architecture.}
 \end{table}
 
-\subsection{Architecture at L2} %TODO Work in progress
+\subsection{Architecture at L2}
 Another common architecture in robotics, involves the distribution of ROS nodes on different hardware platforms. In our case we have two NVIDIA Jetson TX2. 
 This step requires the split of our system in two parts: the \textit{Host}, on which runs Gazebo simulator, and the \textit{Device/s} that will perform either the robot navigation and SLAM.
 Figure \ref{fig:l2arch-exp} show the configuration we setup during the experiment.
@@ -131,15 +129,12 @@ Due to the several interconnected nodes, each of which having many parameters, i
 
 At this architecture level the main focus is on the communication between the \textit{Host}, that act as Master, and the other external nodes that represent the slaves. It is important to verify that the system continue working properly and that the Network doesn't become a bottleneck. For example, if we need to transfer a stream of images from one ROS nodes to another that is running on different machine, we should compress each frame before send it over the network. In this way we avoid to saturate the bandwidth of the network. In this case the compression task is performed to the Host side from the aruco camera within Gazebo simulator. The decompression instead is computed on Jetson by the ORB-SLAM2 node whenever it receives a new frame to elaborate.
 Once again we measured the performance of the system in the same way we have done in the previous architecture level.
-Note that, as we expected, the performance of the ORB-SLAM2 are dropped down due to the computing capability of the Jetson. This is more highlighted when we run both VOVD and ORB-SLAM2 on the same device because they are competing for the hardware resources.
-The new performance measurements are visible in table \ref{tab:resultL2}.
-Note that, due to the modularity of ROS, we are able to fine tune the system without modify to the code. For example, we can easily change either frequency of the camera output or the number of key-points extracted for each incoming frame.
+Note that, as we expected, the performance of the ORB-SLAM2 are dropped down due to the limited computing capability of the Jetson. This is more highlighted when we run both VOVD and ORB-SLAM2 on the same device because they are competing for the hardware resources.
+The new performance measurements are visible in table \ref{tab:resultL2-exp}.
+Note that, due to the modularity of ROS, we are able to fine tune the system without making any change to the code. For example, we can easily modify either frequency of the camera output or the number of key-points extracted for each incoming frame.
 Another parameter to consider is the bandwidth of the network. The virtual Asus Xtion camera used by Gazebo publish images with a resolution of 1280*720*3 at 20 frame per second.
 Computers hooked up to LANs are connected using Cat5 cable. Although the Cat5 ethernet cable can handle up to 10/100 Mbps at a 100 MHz bandwidth, it is not sufficient to transfer the data coming from the camera because it requires a bandwidth of 442 Mps.
 This is reason we measured the data decompression time performed by the ORB-SLAM2 ROS node.
-
-
-
 
 \begin{table}[htbp]
 	\begin{tabularx}{\linewidth}{@{}l*{7}{C}c@{}}
@@ -163,19 +158,17 @@ This is reason we measured the data decompression time performed by the ORB-SLAM
 		(orb(j1);vovd(j2)) & 1.60          & 56.20          & 14.00             & 49.32                 & 43.95                  & 17.79           \\ \hline
 		\bottomrule
 	\end{tabularx}
-	\caption{\label{tab:resultL2}Performance measurement at L2 architecture.}
+	\caption{\label{tab:resultL2-exp}Performance measurement at L2 architecture.}
 \end{table}
 
 
 
-\subsection{Architecture at L3}	%TODO questo non lo abbiamo fatto ma lo mettiamo lo stesso.
+\subsection{Architecture at L3}
 Finally we reached the last architecture level of the design flow. It is composed by the \textit{Host}, \textit{Device/s } and the real robot \textit{Robot/s}. In our case the real robot is the KUKA YouBot \cite{YouBot} provided by the robotics laboratory ALTAIR  from university of Verona.
 
-The key point here is that if the simulator has been properly configured at L1 architecture (as described in chapter \ref{chap:methodology}),  the operation to detach the simulator and attach back the real robot should be completely transparent with respect to the entire system. This is one of the main advantage we can benefit due to the modularity of ROS.
+The key point here is that if the simulator has been properly configured at L1 architecture (as described in chapter \ref{chap:methodology}),  the operation to detach the simulator and attach back the real robot should be completely transparent with respect to the entire system. This is one of the main advantage we had benefit due to the modularity of ROS.
 
 As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it has been replaced by the real robot, on which one or more embedded devices can be attached.
-
-
 
 \begin{figure}[htbp]
 	\centering
@@ -191,145 +184,63 @@ In this section it will described the process used in our project to prepare bot
 
 
 \subsection{Dockerization}
-%TODO Dockerfile di VOVD 
-%TODO Problemi in fase di building del container --> ROS network comunication
 At this point the main goal of the project is to reach the edge devices from the host/cloud server wherever they are.
+For this purpose we need first containerize both VOVD and ORB-SLAM2 for NVIDIA Jetsons.
+Since both are wrapped as ROS nodes, we have to include the ROS (Melodic) base distro and the required dependencies.
+In listing ... is shown the dockerfile used to containerize VOVD.
+
+%TODO Dockerfile di VOVD devo accendere la TX-12
+....
+Listing
+....
 
 
+In phase of image's building we set the \mintinline{bash}{--network=host} flag in order to enable the communication over the ROS network among containers running on different machines.
+This is all about the containerization of a ``simple'' ROS node such as VOVD.
+
+
+To the other side ORB-SLAM2 also needs to access to the GPU of the device.
+On NVIDIA NGC web portal, Linux4Tegra (L4T) package provides the bootloader, kernel, necessary firmwares, NVIDIA drivers, flashing utilities and a sample filesystem to be used on Jetson systems. The software packages contained in L4T provide the functionality necessary to run Linux on Jetson devices (Xavier, TX2, and Nano).
+Thus in this case the L4t image provided by NVIDIA is a more affordable starting point for the containerization of the ORB-SLAM2.
+Furthermore we know that ORB-SLAM2 is an heterogeneous application made a wide variety of libraries such OpenCV, OpenVX, CUDA, TensorRT and so on.
+Consequently we have to provide all of these libraries within the dockerfile in order to build our application.
 
 %TODO Problemi in fase di building del container --> ROS + GPU (TRT)
+%One of the problem we faced during this operation is related to the storage of the Jetson TX2.  Lo diciamo??
+
+
 
 \section{The whole system on Kubeedge}
-%TODO Once we have containerized our applications we are ready to deploy them from the cloud to the edge with kubeedge: L1, L2, L3 ?!.
+After a functional verification at container's level, the system is almost ready to be deployed from the cloud to the edge using kubeedge.
+Following the procedure described in section \ref{sec:deployment}, first we setup our cluster in order to enable the physical and virtual communication between the Host (to the cloudside) and edge nodes (to the edgeside).
+Then we create three configuration files for each application we want to deploy to the edge.
+These configuration files contain the informations for device model, device instance and deployment respectively.
 
-
-
-\section{Discussion}
-
-
-
-
-
+%TODO qui si potrebbe dire di più ad esempio come abbiamo configurato host e jetson i file di device model device instance e deployment
 
 
 
 
+The performance measurements done with the system running on Kubeedge are shown in table \ref{tab:resultL3-exp}
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\subsection{Hybrid local/global planner}
-
-
-
-\section{Results}
-%\begin{table}[ht!]
-%	\resizebox{\linewidth}{!}{%
-%		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|} 
-%			\hline
-%			\hspace{3mm} Setup & Odom VOVD (ms) & Track Pipe (ms) & Decompression (ms) & Frame Elaboration (ms) & Feature Extraction (ms) & Supported (FPS)  \\ 
-%			\hline
-%			\rowcolor{Gray}
-%			\multicolumn{7}{|c|}{Performance Measurement: camera 10 Hz}  \\
-%			\hline
-%			orb(j1)     					 &	-  		  & 43.41 & 13.08  & 49.21 & 43.62 & 20.32   \\ \hline
-%			vovd(j1)       	 			  & 1.70  & -     	 	 & -    		 & -     		& -    		   & -     		  \\ \hline
-%			(orb;vovd)(j1)      	& 2.58 	& 73.49 & 18.69  & 62.70 & 54.76  & 13.61 	 \\ \hline
-%			(orb(j1);vovd(j2))  & 1.60 	& 49.81 & 13.53  & 49.25 & 43.01  & 20.08	 \\ \hline
-%			\rowcolor{Gray}
-%			\multicolumn{10}{|c|}{Performance Measurement: camera 20 Hz}  \\
-%			\hline
-%			orb(j1)     					 &   -  	 & 54.82 & 14.47 & 49.40 & 44.35 &18.24 	 \\ \hline
-%			vovd(j1)       	 			  & 1.70 & -     		& -     	   & -     		 & -     		& -     			 \\ \hline
-%			(orb;vovd)(j1)      	& 2.85 & 93.15 & 23.96 & 67.99 & 60.41 & 10.74 		\\ \hline
-%			(orb(j1);vovd(j2))  & 1.60 & 56.20 & 14.00 & 49.32 & 43.95 & 17.79 		\\ \hline
-%			\rowcolor{Gray}
-%			\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 10 Hz}  \\
-%			\hline
-%			orb(j1)     					& -    		 & 47.28 & 12.78  & 40.52 & 36.02 & 21.15 	 \\ \hline
-%			vovd(j1)       	 			  & 1.30 & -     		& -     	   & -     		  & -     		 & -     		   \\ \hline
-%			(orb;vovd)(j1)      	& 1.40 & 82.47 & 15.10  & 53.54 & 48.09 & 12.12		\\ \hline
-%			(orb(j1);vovd(j2))  & 1.38 & 50.83 & 13.98  & 43.80 & 38.04 & 19.67		\\ \hline
-%			\rowcolor{Gray}
-%			\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 20 Hz}  \\
-%			\hline
-%			orb(j1)     					 & -    	 & 50.20 & 16.20 & 42.16 & 34.82 & 19.92  \\ \hline
-%			vovd(j1)       	 			  & 1.21 & -			& -     	   & -     		 & -     		& -     		\\ \hline
-%			(orb;vovd)(j1)      	& 1.43 & 70.54 & 15.02  & 55.60 & 50.24 & 14.18  \\ \hline
-%			(orb(j1);vovd(j2))  & 1.26 & 58.14 & 13.52  & 42.34 & 37.17 & 17.20  \\ \hline
-%	\end{tabular}}
-%	\caption{Performance Measurement\label{tab:Performance-Measurement}}
-%\end{table}
-
-
-
-
-
-\begin{table}[hbt]
+\begin{table}[htbp]
 	\begin{tabularx}{\linewidth}{@{}l*{7}{C}c@{}}
 		\toprule
 		\hline
 		Setup              & Odom (ms) & Track Pipe (ms) & Dec. (ms) & Frame Elab. (ms) & Feature Ext.(ms) & Supp. (FPS) \\
 		\hline
 		\rowcolor{Gray}
-		\multicolumn{7}{|c|}{Performance Measurement: camera 10 Hz}                                                                                                                                           \\
-		\hline
-		orb(j1)            & -             & 43.41          & 13.08             & 49.21                 & 43.62                  & 20.32           \\ \hline
-		vovd(j1)           & 1.70          & -              & -                 & -                     & -                      & -               \\ \hline
-		(orb;vovd)(j1)     & 2.58          & 73.49          & 18.69             & 62.70                 & 54.76                  & 13.61           \\ \hline
-		(orb(j1);vovd(j2)) & 1.60          & 49.81          & 13.53             & 49.25                 & 43.01                  & 20.08           \\ \hline
-		\rowcolor{Gray}
-		\multicolumn{7}{|c|}{Performance Measurement: camera 20 Hz}                                                                                                                                           \\
-		\hline
-		orb(j1)            & -             & 54.82          & 14.47             & 49.40                 & 44.35                  & 18.24           \\ \hline
-		vovd(j1)           & 1.70          & -              & -                 & -                     & -                      & -               \\ \hline
-		(orb;vovd)(j1)     & 2.85          & 93.15          & 23.96             & 67.99                 & 60.41                  & 10.74           \\ \hline
-		(orb(j1);vovd(j2)) & 1.60          & 56.20          & 14.00             & 49.32                 & 43.95                  & 17.79           \\ \hline
-		\rowcolor{Gray}
-		\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 10 Hz}                                                                                                                                \\
+		\multicolumn{7}{c}{Kubeedge - Performance Measurement: camera 10 Hz}                                                                                                                                           \\
 		\hline
 		orb(j1)            & -             & 47.28          & 12.78             & 40.52                 & 36.02                  & 21.15           \\ \hline
 		vovd(j1)           & 1.30          & -              & -                 & -                     & -                      & -               \\ \hline
 		(orb;vovd)(j1)     & 1.40          & 82.47          & 15.10             & 53.54                 & 48.09                  & 12.12           \\ \hline
 		(orb(j1);vovd(j2)) & 1.38          & 50.83          & 13.98             & 43.80                 & 38.04                  & 19.67           \\ \hline
 		\rowcolor{Gray}
-		\multicolumn{7}{|c|}{Kubeedge - Performance Measurement: camera 20 Hz}                                                                                                                                \\
+		\multicolumn{7}{c}{Kubeedge - Performance Measurement: camera 20 Hz}                                                                                                                                           \\
 		\hline
 		orb(j1)            & -             & 50.20          & 16.20             & 42.16                 & 34.82                  & 19.92           \\ \hline
 		vovd(j1)           & 1.21          & -              & -                 & -                     & -                      & -               \\ \hline
@@ -337,8 +248,13 @@ At this point the main goal of the project is to reach the edge devices from the
 		(orb(j1);vovd(j2)) & 1.26          & 58.14          & 13.52             & 42.34                 & 37.17                  & 17.20           \\ \hline
 		\bottomrule
 	\end{tabularx}
-	\caption{\label{tab:Performance-Measurement2}Performance Measurement.}
+	\caption{\label{tab:resultL3-exp}Performance measurement at L3 architecture.}
 \end{table}
+
+
+%\section{Discussion}
+
+
 
 
 

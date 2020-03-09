@@ -30,21 +30,19 @@ At this architecture level the purpose is to verify the functioning of the whole
 
 The first step to realize this architecture is to wrap your (heterogeneous) applications with the ROS conformance protocol advertises and callbacks. An example of this operation is provided in listings \ref{lst:pub} and \ref{lst:sub}.
 In this way, all the applications that compose your system will be able to interact following the standard communication based on ROS.
-The ROS nodes (publishers and subscribers) communicate between them through virtal channels called topics, thus it is necessary choice the right names of these topics and who will read/write on them.
-Note that with reference to the  scheme presented in figure \ref{fig:l1arch}, among the other components, there is a robot simulator which have to simulate an industrial robot controller that adheres to the ROS-Industrial driver specification. It means that, for the simulator, we shouldn't choose names and properties of his topics different than the topics published from the robot we are going to develop on. Furthermore all the properties configured in the project withing the simulator should be follow the techniacal specification of the real robot we will use.
+The ROS nodes (publishers and subscribers) communicate between them through virtual channels called topics, thus it is necessary choice the right names of these topics and who will read/write on them.
+Note that with reference to the  scheme presented in figure \ref{fig:l1arch}, among the other components, there is a robot simulator which have to simulate an industrial robot controller that adheres to the ROS-Industrial driver specification. It means that, for the simulator, we shouldn't choose names and properties of his topics different than the topics published from the robot we are going to develop on. Furthermore all the properties configured in the project within the simulator should be follow the technical specification of the real robot we will use.
 
 Once the applications are ready to run on ROS, they can be executed using a launchfile, where the user can specify a set of nodes to launch and their parameters.
 Another possibility is invoke the \mintinline{bash}{rosrun} command for each node that have to be executed.
+\\
 
-
-\noindent\begin{minipage}{.475\textwidth}
+\noindent\begin{minipage}{.48\textwidth}
 \begin{minted}[
 frame=single,
 framesep=2mm,
 baselinestretch=1.2,
 fontsize=\footnotesize,
-linenos=true,
-numbersep=7pt
 ]{cpp}
 #include "ros/ros.h"
 ...
@@ -62,15 +60,15 @@ int main(int argc, char **argv) {
  return 0;
 }
 \end{minted}
+\captionof{listing}{Example of publisher.}
+\label{lst:pub}
 \end{minipage}\hfill
-\begin{minipage}{.475\textwidth}
+\begin{minipage}{.48\textwidth}
 \begin{minted}[
 frame=single,
 framesep=2mm,
 baselinestretch=1.2,
 fontsize=\footnotesize,
-linenos=true,
-numbersep=7pt,
 breaklines 
 ]{cpp}
 #include "ros/ros.h"
@@ -88,6 +86,8 @@ int main(int argc, char **argv) {
  return 0;
 }
 \end{minted}
+\captionof{listing}{Example of subscriber.}
+\label{lst:sub}
 \end{minipage}
 \\
 
@@ -162,11 +162,10 @@ To develop containerized applications, in general, the development workflow look
 	\item Test, share, and deploy your complete containerized application.
 \end{itemize}
 
-An image is created only after the definition of a \textit{Dockefile}. Dockerfiles describe how to assemble a private filesystem for a container, and can also contain some metadata describing how to run a container based on this image. An example of Dockerfile looks like this:
+An image is created only after the definition of a \textit{Dockefile}. Dockerfiles describe how to assemble a private filesystem for a container, and can also contain some metadata describing how to run a container based on this image. An example of Dockerfile is shown in listing \ref{lst:dockerfilesample}.
 
+\begin{listing}[H]
 \begin{minted}[
-frame=single,
-framesep=2mm,
 baselinestretch=1.2,
 fontsize=\footnotesize,
 linenos=false,
@@ -193,8 +192,10 @@ CMD [ "npm", "start" ]
 # Copy the rest of your app's source code from your host to your image filesystem.
 COPY . .
 \end{minted}
-%\caption{lst:A minimal example of Dockerfile.}
-
+\caption{A minimal example of Dockerfile.}
+\label{lst:dockerfilesample}
+\end{listing}
+%\caption{}
 
 The main server provider of images is Docker Hub \cite{DockerHub} from which it is possible to search for Docker images created for different systems and configurations.
 ROS Docker images are listed in the official ROS repository on Docker Hub, therefore this is a good starting point for create an image of a ``simple'' ROS application.
@@ -227,9 +228,10 @@ When we are building the docker image, to enable the communication over the \tex
 Another issue is coming out, when we want to benefit of the hardware resources other than CPU, such as GPUs and tensor cores, provided by the heterogeneous platforms on which we will deploy the applications that compose our system.
 Since Docker 19.03, it has been added the support to the NVIDIA-container-runtime. Provided by NVIDIA, it is a modified version of runc adding a custom pre-start hook to all containers.
 If environment variable \mintinline{bash}{NVIDIA_VISIBLE_DEVICES} is set in the Open Container Initiative (OCI) specifications, the hook will configure GPU access for the container by leveraging nvidia-container-cli from libnvidia-container project.
-There are various methods to setup the docker engine for this purpose. The one proposed by NVIDIA is to register the nvidia runtime reconfiguring the docker daemon configuration file as follow:
+There are various methods to setup the docker engine for this purpose. The one proposed by NVIDIA is to register the nvidia runtime reconfiguring the docker daemon configuration file as shown in listing \ref{lst:daemonconfig}.
+
+\begin{listing}[H]
 \begin{minted}[
-frame=single,
 framesep=2mm,
 fontsize=\footnotesize,
 baselinestretch=1.2,
@@ -246,6 +248,9 @@ breaklines
 	"default-runtime": "nvidia"
 }
 \end{minted}
+\caption{Configuration of daemon.json for NVIDIA runtime.}
+\label{lst:daemonconfig}
+\end{listing}
 
 We have already said, that because of a NVIDIA proprietary library could be more tedious to install within a Docker image, the choice to start from an image already provided with gpu (CUDA) libraries would be recommanded. This kind of images are available on the NVIDIA NGC website \cite{nvidiangc}. Once a gpu capable image has been pulled, we can create a container from it simply adding the \mintinline{bash}{--gpus all} flag to the \mintinline{bash}{docker run} or \mintinline{bash}{docker build} commands.
 
@@ -257,7 +262,7 @@ Moreover, it is important to highlight that the automatic loading of the runtime
 
 
 
-\subsection{Deployment}
+\subsection{Deployment}\label{sec:deployment}
 Finally the system is ready to be distributed on heterogeneous platforms, but it isn't yet ready for an automatic smart deployment and orchestration.
 For this purpose we need to do one more thing. First of all, we have to push to the Docker Hub all the images created as described in the previous section. In this way we can pull them from any device wherever they are. Then we need for an orchestration capable platform like Kubernetes (see section \ref{sec:kubernetesbackground}). Moreover with the support of KubeEdge \ref{sec:kubeedgebackground} we can extend the Kubernetes capabilities from the cloud to the edge.
 
@@ -270,9 +275,10 @@ After the installation of KubeEdge, setting up cloud side requires two steps:
 	\item Edge node manually registration (this is optional because will be auto registered by default).
 \end{itemize}
 
-The \textit{cloudconfig.yaml} configuration file can be generated specifying the \mintinline{bash}{--minconfig} argument to the cloudcore binary (see the listing below).
+The \textit{cloudconfig.yaml} configuration file can be generated specifying the \mintinline{bash}{--minconfig} argument to the cloudcore binary (see listing \ref{lst:cloudconfig}).
+
+\begin{listing}[H]
 \begin{minted}[
-frame=single,
 framesep=2mm,
 baselinestretch=1.2,
 fontsize=\footnotesize,
@@ -298,16 +304,17 @@ modules:
         enable: true
         port: 10000
 \end{minted}
-
+\caption{Cloudcore configuration.}
+\label{lst:cloudconfig}
+\end{listing}
 
 This configuration file is suitable for beginners, but a more advances configuration can be generate using \mintinline{bash}{--defaultconfig} flag instead.
 The most important lines to pay attention in the listing above, are line 4, where e have to type the right path to the configuration file generating during the kubernetes cluster creation. And line 16 in winch we have to write the (static) ip address of the master node where the cloudcore will run.
 
-To the edge side, the procedure to generate the \textit{edgeconfig.yaml} configuration file is the same of the cloud side: either create a minimal configuration with command \mintinline{bash}{edgecore --minconfig} or a full configuration with command \mintinline{bash}{edgecore --defaultconfig}. It's content is slightly different instead:
+To the edge side, the procedure to generate the \textit{edgeconfig.yaml} configuration file is the same of the cloud side: either create a minimal configuration with command \mintinline{bash}{edgecore --minconfig} or a full configuration with command \mintinline{bash}{edgecore --defaultconfig}. It's content is slightly different instead (see listing \ref{lst:edgeconfig})
 
-
+\begin{listing}[H]
 \begin{minted}[
-frame=single,
 framesep=2mm,
 baselinestretch=1.2,
 fontsize=\footnotesize,
@@ -351,6 +358,9 @@ modules:
         mqttServerExternal: tcp://127.0.0.1:1883
         mqttServerInternal: tcp://127.0.0.1:1884
 \end{minted}
+\caption{Edgecore configuration.}
+\label{lst:edgeconfig}
+\end{listing}
 
 
 In this case the lines to pay attention are line 13, where we have to write the node name (necessary for deployments). Line 15 where we have to type (static) ip address of the edge node. Finally the line is the ip and port where the server socket of the master node is listening on, and it must to be the same of line 16 in the \textit{cloudconfig.yaml}.
@@ -368,10 +378,10 @@ Generally the steps to address these requirements are the following:
 	\item The reported values of the device twin are updated by the mapper application at the edge and this data is synced back to the cloud by the device controller. User can view the update at the cloud by checking his device instance object.
 \end{enumerate}
 
-Note: Creation of device instance will also lead to the creation of a config map which will contain information about the devices which are required by the mapper applications The name of the config map will be as follows: device-profile-config-< edge node name >. The updation of the config map is handled internally by the device controller.
+Note: Creation of device instance will also lead to the creation of a config map which will contain information about the devices which are required by the mapper applications The name of the config map will be as follows: device-profile-config-\textless edge node name \textgreater. The updation of the config map is handled internally by the device controller.
 Further details on both device model and device instance definition can be found on Kubeedge documentation.
 
-An example of device model, device instance and deployment configuration files are shown below:
+An example of device model, device instance and deployment configuration files are respectively shown below:
 
 \inputminted[frame=single,
 framesep=2mm,
@@ -397,11 +407,11 @@ linenos,
 breaklines]{yaml}{sourcecode/deployment.yaml}
 
 
-Finally we can create/apply these configuration files files using the kubectl commands and leave KubeEdge the creation, distribution and management of the pods related to the our applications.
+Finally we can create/apply these configuration files files using the \mintinline{bash}{kubectl} commands and leave KubeEdge the creation, distribution and management of the pods related to the our applications.
 
 % qui volendo possiamo parlare di misurazione delle performane e memory footprint.
 % http://docs.kubeedge.io/en/latest/setup/memfootprint-test-setup.html
-
+Once again the are several tools we can use to measure health and performance of the running system. As explained in section \ref{sec:kubernetesbackground} we can benefit of the user friendly dashboard provided by Google, or simply 
 
 
 \clearpage

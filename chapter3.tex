@@ -38,7 +38,7 @@ To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Unexpected behaviour}
 After the porting and the optimizations of the ORB-SLAM2 algorithm on the NVIDIA Jetson TX2 to achieve real-time performance, the experimental results conducted in \cite{iros2019} shown a massive improvement of the execution times on some KITTI dataset sequences.
-Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. More specifically, it get into the Tack Lost state (fig. \ref{fig:lost})  in a totally randomic way. Another Track lost state is reached when less then 5 Keyframes are computed and it losts its position (see fig: \ref{fig:lost-reset}).
+Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. More specifically, it get into the Track Lost state (fig. \ref{fig:lost})  in a totally random way. Another Track lost state is reached when less then 5 Keyframes are computed and it lost its position (see fig: \ref{fig:lost-reset}).
 
 \begin{figure}
 	\centering
@@ -47,32 +47,54 @@ Despite these performance improvements, the algorithm seems to exhibit some unex
 	\caption{LOST states of ORB-SLAM2}
 \end{figure}
 
-
-
-
-%TODO in progress
 Due to the randomicity with which the problem occurs, to identify the cause it's necessary isolate the problem as much as possible. For this purpose the first step has been sequentialize the execution between Tracking and Mapping blocks.
+Once the two blocks are running sequentially, we proceeded to inspect the code in more detail founding in such way some potential bugs.
+The main strategy we adopted to find the possible problems within the code, was looking at the difference among the produced results after two o more sequential execution. To achieve this goal we built a custom logger with different levels of debugging.
+
+An example of the problems we found is located in KeyFrame source code, where a \mintinline{c++}{vector<pair<int, KeyFrame*>> vPairs} has been applied to the C++ standard \mintinline{c++}{sort} function. The problem here is the sort procedure use the less operator compare the address of the pointers instead of the id of the KeyFrame.
+To solve this issue we override the less operator in order the achieve the expected behaviour (see listing \ref{lst:lessoverride}).
+Another problem encountered during the code inspection that could introduce a non deterministic execution, is related to the members variables initialization.
+Unlike some programming languages, C/C++ does not initialize most variables to a given value (such as zero) automatically. Thus when a variable is assigned a memory location by the compiler, the default value of that variable is whatever (garbage) value happens to already be in that memory location! A variable that has not been given a known value (usually through initialization or assignment) is called an uninitialized variable.
+
+\begin{listing}[H]
+\begin{minted}[
+fontsize=\footnotesize,
+breaklines
+]{C++}
+namespace std {
+    bool less<ORB_SLAM2::KeyFrame*>::operator()(
+    const ORB_SLAM2::KeyFrame* k1,
+    const ORB_SLAM2::KeyFrame* k2) const {
+        return k1->mnId < k2->mnId;
+    }
+    bool operator<(const std::pair<int, ORB_SLAM2::KeyFrame*> lhs, const std::pair<int, ORB_SLAM2::KeyFrame*> rhs) {
+        return lhs.first < rhs.first || ((lhs.first == rhs.first) && lhs.second->mnId < rhs.second->mnId);
+    }
+}
+\end{minted} 
+\caption{Overriding the less operator.}
+\label{lst:lessoverride}
+\end{listing}
+
+Once these kind of problems have been resolved, the algorithm now is running with a deterministic behaviour. If it get into Track Lost state it happen every time and vice-versa. Unfortunately, when we restore the concurrency between Tracking and Mapping blocks, the problem of unexpected behaviour rise again.
+
+To solve the problem we propose to revise in detail the implementation of the main algorithm for the localization. 
 
 
 
+%\subsection{The problem of the non-determinism} % possible reasons that cause a non deterministic behaviour
 
 
-
-
-
-\subsection{The problem of the non-determinism} % possible reasons that cause a non deterministic behaviour
-
-
-\subsection{The problem of the concurrency} % when we setup the orbslam to run sequentially it works worse that when it run concurrently.
+%\subsection{The problem of the concurrency} % when we setup the orbslam to run sequentially it works worse that when it run concurrently.
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}
-In this chapter the problem of non deterministic behaviour has been addressed and some of the possible solutions to overcome the problem of ...  have been presented.
+In this chapter the problem of non deterministic behaviour has been addressed.% and some of the possible solutions to overcome the problem of ...  have been presented.
 
-The strategy adopted to achieve the goal of ... could reduce the ... in the system.
+The strategy adopted to achieve the goal can be applied in every application that runs in a concurrent and non-concurrent environment.
 
 
 \clearpage

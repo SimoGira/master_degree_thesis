@@ -9,7 +9,7 @@ As described in \cite{Goodfellow-et-al-2016}, the modern term "deep learning" go
 A deep learning prediction algorithm, consists of a number of layers, as shown in Fig. \ref{fig:dnn}.
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{images/nn}
+	\includegraphics[width=0.9\linewidth]{images/nn}
 	\caption[DNN example]{DNN example with image classification}
 	\label{fig:dnn}
 \end{figure}
@@ -64,7 +64,7 @@ As described in \cite{deepedgerev} many challenges remain in deploying deep lear
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Edge Computing} %TODO
+\section{Edge Computing}
 Today, an IoT solution has to cover a much broader scope of requirements. We see that in most cases, organizations opt for a combination of cloud and edge computing for complex IoT solutions. Cloud computing typically comes into play when organizations require storage and computing power to execute certain applications and processes, and to visualize telemetry data from anywhere. Edge computing, on the other hand, is the right choice in cases with low latency, local autonomous actions, reduced back-end traffic, and when confidential data is involved.
 
 \subsection{Motivations}
@@ -73,7 +73,7 @@ The second reason is that almost all kinds of electrical devices will become par
 years. Thus, raw data produced by them will be enormous, making conventional cloud computing not efficient enough to handle all these data. This means most of the data produced by IoT will never be transmitted to the cloud, instead it will be consumed at the edge of the network. Fig. \ref{fig:cloudarch} shows the conventional cloud computing structure.
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{images/cloudarch}
+	\includegraphics[width=0.9\linewidth]{images/cloudarch}
 	\caption{Cloud computing paradigm}
 	\label{fig:cloudarch}
 \end{figure}
@@ -87,7 +87,7 @@ your smart phone. However, people are also producing data nowadays from their mo
 Edge computing refers to the enabling technologies allowing computation to be performed at the edge of the network, on downstream data on behalf of cloud services and upstream data on behalf of IoT services. The rationale of edge computing is that computing should happen at the proximity of data sources. From a certain point of view, edge computing could interchangeable with fog computing \cite{openfog}, but edge computing focus more toward the things side, while the first focus more on the infrastructure side. Fig. \ref{fig:edgearch} illustrates the two-way computing streams in edge computing. In the edge computing paradigm, the things not only are data consumers, but also play as data producers. At the edge, the things can not only request service and content from the cloud but also perform the computing tasks from the cloud. Edge can perform computing offloading, data storage, caching and processing, as well as distribute request and delivery service from cloud to user. With those jobs in the network, the edge itself needs to be well designed to meet the requirement efficiently in service such as reliability, security, and privacy protection.
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{images/edgearch}
+	\includegraphics[width=0.9\linewidth]{images/edgearch}
 	\caption{Edge computing paradigm}
 	\label{fig:edgearch}
 \end{figure}
@@ -170,7 +170,7 @@ But layers don’t only make distribution more efficient, they also help reduce 
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{images/dockerflow.pdf}
+	\includegraphics[width=0.9\textwidth]{images/dockerflow.pdf}
 	\caption{Docker images, registries, and containers}
 	\label{fig:dockerflow}
 \end{figure}
@@ -197,7 +197,7 @@ Deploying applications through Kubernetes is always the same, whether your clust
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{images/kubernetesmain.pdf}
+	\includegraphics[width=0.9\textwidth]{images/kubernetesmain.pdf}
 	\caption{Kubernetes exposes the whole datacenter as a single deployment platform}
 	\label{fig:kubernetesmain}
 \end{figure}
@@ -227,7 +227,7 @@ Figure \ref{fig:kubecluster} shows the components running on these two sets of n
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{images/kubecluster.pdf}
+	\includegraphics[width=0.9\textwidth]{images/kubecluster.pdf}
 	\caption{The components that make up a Kubernetes cluster}
 	\label{fig:kubecluster}
 \end{figure}
@@ -242,7 +242,7 @@ When the API server processes your app’s description, the Scheduler schedules 
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{images/kubedockeroverview.pdf}
+	\includegraphics[width=0.9\textwidth]{images/kubedockeroverview.pdf}
 	\caption{A basic overview of the Kubernetes architecture and an application running on top of it.}
 	\label{fig:kubedockeroverview}
 \end{figure}
@@ -250,12 +250,32 @@ When the API server processes your app’s description, the Scheduler schedules 
 Examine figure \ref{fig:kubedockeroverview} to gain a better understanding of how applications are deployed in Kubernetes. The app descriptor lists four containers, grouped into three sets (these sets are called pods). The first two pods each contain only a single container, whereas the last one contains two. That means both containers need to run co-located and shouldn't be isolated from each other. Next to each pod, you also see a number representing the number of replicas of each pod that need to run in parallel. After submitting the descriptor to Kubernetes, it will schedule the specified number of replicas of each pod to the available worker nodes. The Kubelets on the nodes will then tell Docker to pull the container images from the image registry and run the containers.
 
 
+\subsection{Monitoring of Performance}
+Properly setting resource requests and limits within a Pod, is crucial for getting the most out of your Kubernetes cluster. If requests are set too high, your cluster nodes will be underutilized and you’ll be throwing money away. If you set them too low, your apps will be CPU-starved or even killed by the OOM Killer. How do you find the sweet spot for requests and limits?
+You find it by monitoring the actual resource usage of your containers under the expected load levels. Once the application is exposed to the public, you should keep monitoring it and adjust the resource requests and limits if required.
+Since Kubernetes v1.18 monitoring is split into two pipelines:
+\begin{itemize}
+	\item A \textbf{core metrics pipeline} consisting of Kubelet, a resource estimator, a slimmed-down Heapster called metrics-server, and the API server serving the master metrics API. These metrics are used by core system components, such as scheduling logic (e.g. scheduler and horizontal pod autoscaling based on system metrics) and simple out-of-the-box UI components (e.g. kubectl top). 
+	\item A \textbf{monitoring pipeline} used for collecting various metrics from the system and exposing them to end-users, as well as to the Horizontal Pod Autoscaler (for custom metrics) and Infrastore via adapters. Users can choose from many monitoring system vendors, or run none at all. In open-source, Kubernetes will not ship with a monitoring pipeline, but third-party options will be easy to install. Pipelines will typically consist of a per-node agent and a cluster-level aggregator. 
+\end{itemize}
+The architecture of the core metrics pipeline is illustrated in figure \ref{fig:metricspipe}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/k8smonitor.pdf}
+	\caption{Core Metrics pipeline.}
+	\label{fig:metricspipe}
+\end{figure}
+
+The interaction with these API can be performed through the command line tool or into graphical web user interfaces web dashboard provided by Google.
+The dashboard allows you to list all the Pods, ReplicationControllers, Services, and other objects deployed in your cluster, as well as to create, modify, and delete them. Figure \ref{fig:dashboard} shows the dashboard.
+
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{KubeEdge} \label{sec:kubeedgebackground} %TODO
+\section{KubeEdge} \label{sec:kubeedgebackground}
 KubeEdge is an open source system extending native containerized application orchestration and device management to hosts at the Edge. It is built upon Kubernetes and provides core infrastructure support for networking, application deployment and metadata synchronization between cloud and edge. It also supports MQTT and allows developers to author custom logic and enable resource constrained device communication at the Edge. KubeEdge consists of a cloud part and an edge part. Both edge and cloud parts are now opensourced.
 
 \section{Motivation}
@@ -266,37 +286,6 @@ The advantages of KubeEdge include mainly:
 	\item \textbf{Kubernetes-native support}: With KubeEdge, users can orchestrate apps, manage devices and monitor app and device status on Edge nodes just like a traditional Kubernetes cluster in the Cloud.
 	\item \textbf{Abundant applications}: It is easy to get and deploy existing complicated machine learning, image recognition, event processing and other high level applications to the Edge.
 \end{itemize}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 \clearpage
