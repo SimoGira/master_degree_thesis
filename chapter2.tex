@@ -2,13 +2,15 @@
 
 \section{Deep Learning} \label{sec:deeplearning}
 \subsection{Motivations}
-Deep learning has recently been highly successful in machine learning across a variety of application domains, including computer vision, natural language processing, and big data analysis, among others. For example, deep learning methods have consistently outperformed traditional methods for object recognition and detection in the ISLVRC Computer Vision Competition since 2012 \cite{ILSVRC15}. However, deep learning’s high accuracy comes at the expense of high computational and memory requirements for both the training and inference phases of deep learning. Training a deep learning model is space and computationally expensive due to millions of parameters that need to be iteratively refined over multiple time epochs. Inference is computationally expensive due to the potentially high dimensionality of the input data (e.g., a high-resolution image) and millions of computations that need to be performed on the input data.
+Deep learning has recently been highly successful in machine learning across a variety of application domains, including computer vision, natural language processing, and big data analysis, among others. For example, deep learning methods have consistently outperformed traditional methods for object recognition and detection in the IMAGENET Large Scale Visual Recognition Challenge (ISLVRC) since 2012 \cite{ILSVRC15}.
+However, deep learning's high accuracy comes at the expense of high computational and memory requirements for both the training and inference phases of deep learning. Training a deep learning model is space and computationally expensive due to millions of parameters that need to be iteratively refined over multiple time epochs. Inference is computationally expensive due to the potentially high dimensionality of the input data (e.g., a high-resolution image) and millions of computations that need to be performed on the input data.
 
 \subsection{Definitions}
 As described in \cite{Goodfellow-et-al-2016}, the modern term "deep learning" goes beyond the neuroscientific perspective engineering applications on the current breed of machine learning models. It appeals to a more general principle of learning \textit{multiple levels of composition}, which can be applied in machine learning frameworks that are not necessarily neurally inspired. Deep learning is a subset of AI and machine learning and differs in that they can automatically learn representations from data such as images, video or text, to be used for classification without introducing hand-coded rules or human domain knowledge. Their highly flexible architectures can learn directly from raw data and can increase their predictive accuracy when provided with more data.
 A deep learning prediction algorithm, consists of a number of layers, as shown in Fig. \ref{fig:dnn}.
 
-\begin{figure}
+\begin{figure}[tbp]
+	\centering
 	\includegraphics[width=0.9\linewidth]{images/nn}
 	\caption[DNN example]{DNN example with image classification}
 	\label{fig:dnn}
@@ -27,7 +29,7 @@ Deep learning can be used to perform both supervised learning and unsupervised l
 Other general system performance metrics not specific to the application include throughput, latency, and energy. These metrics are summarized in Table \ref{tab:NN-Perfomance-Metrics}.
 Designing a good DNN model or selecting the right DNN model for a given application is challenging due to the large number of hyper-parameter decisions.
 
-\begin{table}[htbp]
+\begin{table}[tbp]
 	\centering
 	\begin{tabular}{|l||c|} 
 	\hline 
@@ -49,7 +51,7 @@ Once the system performance is understood, the application developer can choose 
 
 
 \subsection{Frameworks}
-Several open-source software libraries are publicly available for deep learning inference and training on end devices and edge servers. Google’s TensorFlow \cite{tensorflow2015-whitepaper}, released in 2015, is an interface for expressing machine learning algorithms and an implementation for executing such algorithms on heterogeneous distributed systems. Tensorflow's computation workflow is designed as a directed graph and utilizes a placement algorithm to distribute computation tasks based on the estimated or measured execution time and communication time \cite{abadi2016tensorflow}. The placement algorithm uses a greedy approach that places a computation task on the node that is expected to complete the computation the soonest. Tensorflow can run on edge devices, such as Raspberry Pi and smartphones. TensorFlow Lite was proposed in the late 2017 \cite{tensorflowlite}, which is an optimized version of Tensorflow for mobile and embedded devices, with mobile GPU support added in early 2019. 
+Several open-source software libraries are publicly available for deep learning inference and training on end devices and edge servers. Google's TensorFlow \cite{tensorflow2015-whitepaper}, released in 2015, is an interface for expressing machine learning algorithms and an implementation for executing such algorithms on heterogeneous distributed systems. Tensorflow's computation workflow is designed as a directed graph and utilizes a placement algorithm to distribute computation tasks based on the estimated or measured execution time and communication time \cite{abadi2016tensorflow}. The placement algorithm uses a greedy approach that places a computation task on the node that is expected to complete the computation the soonest. Tensorflow can run on edge devices, such as Raspberry Pi and smartphones. TensorFlow Lite was proposed in the late 2017 \cite{tensorflowlite}, which is an optimized version of Tensorflow for mobile and embedded devices, with mobile GPU support added in early 2019. 
 Tensorflow Lite only provides on-device inference abilities, not training, and achieves low latency by compressing a pre-trained DNN model.
 Caffe \cite{Caffe} is another deep learning framework, originally developed by Jia, with the current version, Caffe2, maintained by Facebook. It seeks to provide an easy and straightforward way for deep learning with a focus on mobile devices, including smartphones and Raspberry Pis. PyTorch \cite{NEURIPS2019_9015} is another deep learning platform developed by Facebook, with its main goal differing from Caffe2 in which it focuses on the integration of research prototypes to production development. Actually Facebook is working on the merge of Caffe2 and PyTorch frameworks.
 GPUs are an important key element in efficient DNN inference and training. NVIDIA provides GPU software libraries to make use of NVIDIA GPUs, such as CUDA \cite{CUDA} for general GPU processing and cuDNN \cite{cuDNN} which is targeted toward deep learning. While such libraries are useful for training DNN models on a desktop server, cuDNN and CUDA are not widely available on current mobile devices such as smartphones. To utilize smartphone GPUs, Android developers can currently make use of Tensorflow Lite, which provides experimental GPU capabilities. To experiment with edge devices other than smartphones, researchers can turn to edge-specific development kits, such as the NVIDIA Jetson TX2 development kit for experimenting with edge computing, with NVIDIA-provided SDKs used to program the devices.
@@ -68,11 +70,12 @@ As described in \cite{deepedgerev} many challenges remain in deploying deep lear
 Today, an IoT solution has to cover a much broader scope of requirements. We see that in most cases, organizations opt for a combination of cloud and edge computing for complex IoT solutions. Cloud computing typically comes into play when organizations require storage and computing power to execute certain applications and processes, and to visualize telemetry data from anywhere. Edge computing, on the other hand, is the right choice in cases with low latency, local autonomous actions, reduced back-end traffic, and when confidential data is involved.
 
 \subsection{Motivations}
-As written in \cite{edgecomputingvision} there are at least three reasons to consider the adoption of the edge computing. The first is that putting all the computing tasks on the cloud has been proved to be an efficient way for data processing since the computing power on the cloud outclasses the capability of the things at the edge. However, compared to the fast developing data processing speed, the bandwidth of the network has come to a standstill. With the growing quantity of data generated at the edge, speed of data transportation is becoming the bottleneck for the cloud-based computing paradigm.
+As written in \cite{edgecomputingvision} there are at least three reasons to consider the adoption of edge computing. The first is that putting all the computing tasks on the cloud has been proved to be an efficient way for data processing since the computing power on the cloud outclasses the capability of the things at the edge. However, compared to the fast developing data processing speed, the bandwidth of the network has come to a standstill. With the growing quantity of data generated at the edge, speed of data transportation is becoming the bottleneck for the cloud-based computing paradigm.
 The second reason is that almost all kinds of electrical devices will become part of IoT, and they will play the role of data producers as well as consumers, such as air quality sensors, LED bars, street lights and even an Internet-connected microwave oven. It is safe to infer that the number of things at the edge of the network will develop to more than billions in a few
 years. Thus, raw data produced by them will be enormous, making conventional cloud computing not efficient enough to handle all these data. This means most of the data produced by IoT will never be transmitted to the cloud, instead it will be consumed at the edge of the network. Fig. \ref{fig:cloudarch} shows the conventional cloud computing structure.
 
-\begin{figure}
+\begin{figure}[tbp]
+	\centering
 	\includegraphics[width=0.9\linewidth]{images/cloudarch}
 	\caption{Cloud computing paradigm}
 	\label{fig:cloudarch}
@@ -86,7 +89,8 @@ your smart phone. However, people are also producing data nowadays from their mo
 \subsection{Definitions}
 Edge computing refers to the enabling technologies allowing computation to be performed at the edge of the network, on downstream data on behalf of cloud services and upstream data on behalf of IoT services. The rationale of edge computing is that computing should happen at the proximity of data sources. From a certain point of view, edge computing could interchangeable with fog computing \cite{openfog}, but edge computing focus more toward the things side, while the first focus more on the infrastructure side. Fig. \ref{fig:edgearch} illustrates the two-way computing streams in edge computing. In the edge computing paradigm, the things not only are data consumers, but also play as data producers. At the edge, the things can not only request service and content from the cloud but also perform the computing tasks from the cloud. Edge can perform computing offloading, data storage, caching and processing, as well as distribute request and delivery service from cloud to user. With those jobs in the network, the edge itself needs to be well designed to meet the requirement efficiently in service such as reliability, security, and privacy protection.
 
-\begin{figure}
+\begin{figure}[tbp]
+	\centering
 	\includegraphics[width=0.9\linewidth]{images/edgearch}
 	\caption{Edge computing paradigm}
 	\label{fig:edgearch}
@@ -108,16 +112,16 @@ To protect the data \textit{security} and usage \textit{privacy} at the edge of 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Robotics Tools and Platforms} \label{sec:Robotics-Tools-and-Platforms}
-This section will cite and recap the main robotics platforms discovered and explored during the development of this thesis.
+This section present the main robotics platforms analysed and explored during the development of this thesis.
 
 \subsection{ROS}
 The Robot Operating System (ROS) \cite{ROS}, is a open-source framework based on the component-based software engineering paradigm that provides the middleware for inter-process communication. Initially developed by the Stanford  Artificial Intelligence Laboratory its development continued at Willow Garage, a robotics research institute, and now it's maintained and improved under the action of the ORSF foundation \cite{ROS}. As a meta-operating system, ROS offers features such as hardware abstraction, low-level device control, implementation of commonly used functionalities, message communication between processes and package management. It uses an asynchronous publish/subscribing mechanism made possible by message standardisation and encapsulation that make the external interface of every node as general as possible, allowing quick nodes exchange and, thus, great architectural flexibility. Each independent block, called \textit{node}, executes a particular task of a process and can communicates with other nodes through \textit{topics}. This allows to create complex architectures by aggregating many simpler entities and simplifies the use of different tasks  or different methods for the same task. Additionally to the message-passing system, the core ROS component, called \textit{roscore}, maintains a global execution time for the nodes to achieve synchronisation. Each node executes separately with its own internal clock driven by the set execution rate. At every message sent/received, containing the internal time information, the core component updates the global time by following the execution status provided by these messages.
 For more clarity about how ROS communication works an example is provided in figure \ref{fig:ros-nodes-topics}. When a publishing node will announce to the master that it is publishing over a topic and the subscribing node will say to the master that it want to listen to a topic. Then if the publisher
 and the subscriber are on the same topic, the master will transfer data in order for the two other node to communicate directly via TCP/IP or UDP.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
-	\includegraphics[width=0.90\textwidth]{images/ROSexample2.pdf}
+	\includegraphics[width=0.9\textwidth]{images/ROSexample2.pdf}
 	\caption{Example of nodes and topic communication}
 	\label{fig:ros-nodes-topics}
 \end{figure}
@@ -151,70 +155,76 @@ CoppeliaSim can be used as a stand-alone application or can easily be embedded i
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Docker} %TODO cite book
-While container technologies have been around for a long time, they’ve become more widely known with the rise of the Docker container platform. Docker was the first container system that made containers easily portable across different machines. It simplified the process of packaging up not only the application but also all its libraries and other dependencies, even the whole OS file system, into a simple, portable package that can be used to provision the application to any other machine running Docker. When you run an application packaged with Docker, it sees the exact filesystem contents that you’ve bundled with it. It sees the same files whether it’s running on your development machine or a production machine, even if it the production server is running a completely different Linux OS. The application won’t see anything from the server it’s running on, so it doesn't matter if the server has a completely different set of installed libraries compared to your development machine.
-This is similar to creating a VM image by installing an operating system into a VM, installing the app inside it, and then distributing the whole VM image around and running it. Docker achieves the same effect, but instead of using VMs to achieve app isolation, it uses Linux container technologies to provide (almost) the same level of isolation that VMs do. Instead of using big monolithic VM images, it uses container images, which are usually smaller.
+While container technologies have been around for a long time, they have become more widely known with the rise of the Docker container platform. Docker was the first container system that made containers easily portable across different machines. It simplifies the process of packaging up not only the application but also all its libraries and other dependencies, even the whole OS file system, into a simple, portable package that can be used to provision the application to any other machine running Docker. When you run an application packaged with Docker, it sees the exact filesystem contents that you have bundled with it. It sees the same files whether it is running on your development machine or a production machine, even if it the production server is running a completely different Linux OS. The application will not see anything from the server it is running on, so it does not matter if the server has a completely different set of installed libraries compared to your development machine.
+This is similar to creating a VM image by installing an operating system into a VM, installing the app inside it, and then distributing the whole VM image around and running it. Docker achieves the same effect, but instead of using Virtual Machines (VMs) to achieve app isolation, it uses Linux container technologies to provide (almost) the same level of isolation that VMs do. Instead of using big monolithic VM images, it uses container images, which are usually smaller.
 
 \subsection{Understanding Docker Concepts}
-Docker is a platform for packaging, distributing, and running applications. As we’ve already stated, it allows you to package your application together with its whole environment. This can be either a few libraries that the app requires or even all the files that are usually available on the filesystem of an installed operating system. Docker makes it possible to transfer this package to a central repository from which it can then be transferred to any computer running Docker and executed there.
+Docker is a platform for packaging, distributing, and running applications. It allows you to package your application together with its whole environment. This can be either a few libraries that the app requires or even all the files that are usually available on the filesystem of an installed operating system. Docker makes it possible to transfer this package to a central repository from which it can then be transferred to any computer running Docker and executed there.
 Three main concepts in Docker comprise this scenario:
 
 \begin{itemize}
-	\item Images: A Docker-based container image is something you package your application and its environment into. It contains the filesystem that will be available to the application and other metadata, such as the path to the executable that should be executed when the image is run.
-	\item Registries: A Docker Registry is a repository that stores your Docker images and facilitates easy sharing of those images between different people and computers. When you build your image, you can either run it on the computer you’ve built it on, or you can push (upload) the image to a registry and then pull (download) it on another computer and run it there. Certain registries are public, allowing anyone to pull images from it, while others are private, only accessible to certain people or machines.
-	\item Containers: A Docker-based container is a regular Linux container created from a Docker-based container image. A running container is a process running on the host running Docker, but it’s completely isolated from both the host and all other processes running on it. The process is also resource-constrained, meaning it can only access and use the amount of resources (CPU, RAM, and so on) that are allocated to it.
+	\item \textbf{Images}: A Docker-based container image is something you package your application and its environment into. It contains the filesystem that will be available to the application and other metadata, such as the path to the executable that should be executed when the image is run.
+	\item \textbf{Registries}: A Docker Registry is a repository that stores your Docker images and facilitates easy sharing of those images between different people and computers. When you build your image, you can either run it on the computer you have built it on, or you can push (upload) the image to a registry and then pull (download) it on another computer and run it there. Certain registries are public, allowing anyone to pull images from it, while others are private, only accessible to certain people or machines.
+	\item \textbf{Containers}: A Docker-based container is a regular Linux container created from a Docker-based container image. A running container is a process of the host on which Docker is running, but it is completely isolated from both the host and all other processes running on it. The process is also resource-constrained, meaning that it can only access and use the amount of resources (CPU, RAM, and so on) that are allocated to it.
 \end{itemize}
 
 Figure \ref{fig:dockerflow} shows all three concepts and how they relate to each other. The developer first builds an image and then pushes it to a registry. The image is thus available to anyone who can access the registry. They can then pull the image to any other machine running Docker and run the image. Docker creates an isolated container based on the image and runs the binary executable specified as part of the image.
-Docker images are composed of layers. Different images can contain the exact same layers because every Docker image is built on top of another image and two different images can both use the same parent image as their base. This speeds up the distribution of images across the network, because layers that have already been transferred as part of the first image don’t need to be transferred again when transferring the other image.
-But layers don’t only make distribution more efficient, they also help reduce the storage footprint of images. Each layer is only stored once. Two containers created from two images based on the same base layers can therefore read the same files, but if one of them writes over those files, the other one doesn't see those changes. Therefore, even if they share files, they’re still isolated from each other. This works because container image layers are read-only. When a container is run, a new writeable layer is created on top of the layers in the image. When the process in the container writes to a file located in one of the underlying layers, a copy of the whole file is created in the top-most layer and the process writes to the copy.
+Docker images are composed of layers. Different images can contain the exact same layers because every Docker image is built on top of another image and two different images can both use the same parent image as their base. This speeds up the distribution of images across the network, because layers that have already been transferred as part of the first image do not need to be transferred again when transferring the other image.
+But layers do not only make distribution more efficient, they also help reduce the storage footprint of images. Each layer is only stored once. Two containers created from two images based on the same base layers can therefore read the same files, but if one of them writes over those files, the other one does not see those changes. Therefore, even if they share files, they are still isolated from each other. This works because container image layers are read-only. When a container is run, a new writeable layer is created on top of the layers in the image. When the process in the container writes to a file located in one of the underlying layers, a copy of the whole file is created in the top-most layer and the process writes to the copy.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{images/dockerflow.pdf}
-	\caption{Docker images, registries, and containers}
+	\caption{Docker images, registries, and containers.}
 	\label{fig:dockerflow}
 \end{figure}
 
 \subsection{Portability Limitations of Container Images}
-In theory, a container image can be run on any Linux machine running Docker, but one small caveat exists, one related to the fact that all containers running on a host use the host’s Linux kernel. If a containerized application requires a specific kernel version, it may not work on every machine. If a machine runs a different version of the Linux kernel or doesn’t have the same kernel modules available, the app can’t run on it.
+In theory, a container image can be run on any Linux machine running Docker, but one small caveat exists, one related to the fact that all containers running on a host use the host's Linux kernel. If a containerized application requires a specific kernel version, it may not work on every machine. If a machine runs a different version of the Linux kernel or does not have the same kernel modules available, the app cannot run on it.
 
 While containers are much more lightweight compared to VMs, they impose certain constraints on the apps running inside them. VMs have no such constraints, because each VM runs its own kernel.
-
-And it’s not only about the kernel. It should also be clear that a containerized app built for a specific hardware architecture can only run on other machines that have the same architecture. It isn't possible containerize an application built for the x86 architecture and expect it to run on an ARM-based machine because it also runs Docker. You still need a VM for that.
-It is very important understand that Docker itself doesn’t provide process isolation. The actual isolation of containers is done at the Linux kernel level using kernel features such as Linux Namespaces and cgroups. Docker only makes it easy to use those features.
+And it is not only about the kernel. It should also be clear that a containerized app built for a specific hardware architecture can only run on other machines that have the same architecture. It is not possible containerize an application built for the x86 architecture and expect it to run on an ARM-based machine because it also runs Docker. You still need a Virtual Machine for that.
+It is very important to understand that Docker itself does not provide process isolation. The actual isolation of containers is done at the Linux kernel level using kernel features such as Linux Namespaces and cgroups. Docker only makes it easy to use those features.
 
 %TODO inderire la parte di rete di docker
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Kubernetes} \label{sec:kubernetesbackground}
-As the number of deployable application components in your system grows, it becomes harder to manage them all. Google was probably the first company that realized it needed a much better way of deploying and managing their software components and their infrastructure to scale globally. It’s one of only a few companies in the world that runs hundreds of thousands of servers and has had to deal with managing deployments on such a massive scale. This has forced them to develop solutions for making the development and deployment of thousands of software components manageable and cost-efficient.
+As the number of deployable application components in your system grows, it becomes harder to manage them all. Google was probably the first company that realized the need of a much better way to deploy and manage their software components and their infrastructure to scale globally. It is one of only a few companies in the world that runs hundreds of thousands of servers and has had to deal with managing deployments on such a massive scale. This has forced them to develop solutions for making the development and deployment of thousands of software components manageable and cost-efficient.
 
 
 \subsection{What is Kubernetes}
-Kubernetes is a software system that allows you to easily deploy and manage containerized applications on top of it. It relies on the features of Linux containers to run heterogeneous applications without having to know any internal details of these applications and without having to manually deploy these applications on each host. Because these apps run in containers, they don’t affect other apps running on the same server, which is critical when you run applications for completely different organizations on the same hardware.
+Kubernetes is a software system that allows you to easily deploy and manage containerized applications on top of it. It relies on the features of Linux containers to run heterogeneous applications without having to know any internal details of these applications and without having to manually deploy these applications on each host. Because these apps run in containers, they do not affect other apps running on the same server, which is critical when you run applications for completely different organizations on the same hardware.
 Kubernetes enables you to run your software applications on thousands of computer nodes as if all those nodes were a single, enormous computer.
 Deploying applications through Kubernetes is always the same, whether your cluster contains only a couple of nodes or thousands of them. The size of the cluster makes no difference at all. Additional cluster nodes simply represent an additional amount of resources available to deployed apps.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{images/kubernetesmain.pdf}
-	\caption{Kubernetes exposes the whole datacenter as a single deployment platform}
+	\caption{Kubernetes exposes the whole datacenter as a single deployment platform.}
 	\label{fig:kubernetesmain}
 \end{figure}
 
-Figure \ref{fig:kubernetesmain} shows the simplest possible view of a Kubernetes system. The system is composed of a master node and any number of worker nodes. When the developer submits a list of apps to the master, Kubernetes deploys them to the cluster of worker nodes. What node a component lands on doesn't (and shouldn't) matter neither to the developer nor to the system administrator.
+Figure \ref{fig:kubernetesmain} shows the simplest possible view of a Kubernetes system. The system is composed of a master node and any number of worker nodes. When the developer submits a list of apps to the master, Kubernetes deploys them to the cluster of worker nodes. What node a component lands on does not (and should not) matter neither to the developer nor to the system administrator.
 
 \subsection{Architecture of a Kubernetes cluster}
-At the hardware level, a Kubernetes cluster is composed of many nodes, which can be split into two types. 
-The fisrt is the \textit{Control Plane} that is what controls the cluster and makes it function. It consists of multiple components that can run on a single master node or be split across multiple nodes and replicated to ensure high availability. These components are:
+A Kubernetes cluster is composed of many nodes, which can be split into two types.
+\begin{itemize}
+	\item The \textit{master} node, which host the \textit{Kubernetes Control Plane} that controls and manages the whole Kubernetes system.
+	\item Worker \textit{nodes} that run the actual applications you deploy.
+\end{itemize}
 
+The \textit{Control Plane} is what controls the cluster and makes it function.
+It consists of multiple components that can run on a single master node or be split across multiple nodes and replicated to ensure high availability. These components are:
 \begin{itemize}
 	\item The Kubernetes \textit{API Server}, which you and the other Control Plane components communicate with.
 	\item The \textit{Scheduler}, which schedules your apps (assigns a worker node to each deployable component of your application).
 	\item The \textit{Controller Manager}, which performs cluster-level functions, such as replicating components, keeping track of worker nodes, handling node failures, and so on.
 	\item \textit{etcd}, a reliable distributed data store that persistently stores the cluster configuration. 
 \end{itemize}
-The components of the Control Plane hold and control the state of the cluster, but they don’t run your applications. This is done by the (worker) nodes.
+
+The components of the Control Plane hold and control the state of the cluster, but they do not run your applications. This is done by the (worker) nodes.
+
 The worker nodes are the machines that run your containerized applications. The task of running, monitoring, and providing services to your applications is done by the following components:
 \begin{itemize}
 	\item Docker, rkt, or another container runtime, which runs your containers.
@@ -225,10 +235,10 @@ The worker nodes are the machines that run your containerized applications. The 
 Figure \ref{fig:kubecluster} shows the components running on these two sets of nodes.
 
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{images/kubecluster.pdf}
-	\caption{The components that make up a Kubernetes cluster}
+	\caption{The components that make up a Kubernetes cluster.}
 	\label{fig:kubecluster}
 \end{figure}
 
@@ -237,40 +247,43 @@ Figure \ref{fig:kubecluster} shows the components running on these two sets of n
 \subsection{Running an application in Kubernetes}
 To run an application in Kubernetes, you first need to package it up into one or more container images, push those images to an image registry, and then post a description of your app to the Kubernetes API server.
 
-The description includes information such as the container image or images that contain your application components, how those components are related to each other, and which ones need to be run co-located (together on the same node) and which don’t. For each component, you can also specify how many copies (or replicas) you want to run. Additionally, the description also includes which of those components provide a service to either internal or external clients and should be exposed through a single IP address and made discoverable to the other components.
-When the API server processes your app’s description, the Scheduler schedules the specified groups of containers onto the available worker nodes based on computational resources required by each group and the unallocated resources on each node at that moment. The Kubelet on those nodes then instructs the Container Runtime (Docker, for example) to pull the required container images and run the containers.
+The description includes information such as the container image or images that contain your application components, how those components are related to each other, and which ones need to be run co-located (together on the same node) and which do not. For each component, you can also specify how many copies (or replicas) you want to run. Additionally, the description also includes which of those components provide a service to either internal or external clients and should be exposed through a single IP address and made discoverable to the other components.
+When the API server processes your app's description, the Scheduler schedules the specified groups of containers onto the available worker nodes based on computational resources required by each group and the unallocated resources on each node at that moment. The Kubelet on those nodes then instructs the Container Runtime (Docker, for example) to pull the required container images and run the containers.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{images/kubedockeroverview.pdf}
 	\caption{A basic overview of the Kubernetes architecture and an application running on top of it.}
 	\label{fig:kubedockeroverview}
 \end{figure}
 
-Examine figure \ref{fig:kubedockeroverview} to gain a better understanding of how applications are deployed in Kubernetes. The app descriptor lists four containers, grouped into three sets (these sets are called pods). The first two pods each contain only a single container, whereas the last one contains two. That means both containers need to run co-located and shouldn't be isolated from each other. Next to each pod, you also see a number representing the number of replicas of each pod that need to run in parallel. After submitting the descriptor to Kubernetes, it will schedule the specified number of replicas of each pod to the available worker nodes. The Kubelets on the nodes will then tell Docker to pull the container images from the image registry and run the containers.
+Figure \ref{fig:kubedockeroverview} gives a better understanding of how applications are deployed in Kubernetes. The app descriptor lists four containers, grouped into three sets (these sets are called pods). The first two pods each contain only a single container, whereas the last one contains two containers. This means both containers need to run co-located and shouldn't be isolated from each other. Next to each pod, you also see a number representing the number of replicas of each pod that need to run in parallel. After submitting the descriptor to Kubernetes, it will schedule the specified number of replicas of each pod to the available worker nodes. The Kubelets on the nodes will then tell Docker to pull the container images from the image registry and run the containers.
 
 
 \subsection{Monitoring of Performance}
-Properly setting resource requests and limits within a Pod, is crucial for getting the most out of your Kubernetes cluster. If requests are set too high, your cluster nodes will be underutilized and you’ll be throwing money away. If you set them too low, your apps will be CPU-starved or even killed by the OOM Killer. How do you find the sweet spot for requests and limits?
+Properly setting resource requests and limits within a Pod, is crucial for getting the most out of your Kubernetes cluster. If requests are set too high, your cluster nodes will be underutilized and you will be throwing money away. If you set them too low, your apps will be CPU-starved or even killed by the Out Of Memory (OOM) Killer. How do you find the sweet spot for requests and limits?
 You find it by monitoring the actual resource usage of your containers under the expected load levels. Once the application is exposed to the public, you should keep monitoring it and adjust the resource requests and limits if required.
 Since Kubernetes v1.18 monitoring is split into two pipelines:
 \begin{itemize}
 	\item A \textbf{core metrics pipeline} consisting of Kubelet, a resource estimator, a slimmed-down Heapster called metrics-server, and the API server serving the master metrics API. These metrics are used by core system components, such as scheduling logic (e.g. scheduler and horizontal pod autoscaling based on system metrics) and simple out-of-the-box UI components (e.g. kubectl top). 
 	\item A \textbf{monitoring pipeline} used for collecting various metrics from the system and exposing them to end-users, as well as to the Horizontal Pod Autoscaler (for custom metrics) and Infrastore via adapters. Users can choose from many monitoring system vendors, or run none at all. In open-source, Kubernetes will not ship with a monitoring pipeline, but third-party options will be easy to install. Pipelines will typically consist of a per-node agent and a cluster-level aggregator. 
 \end{itemize}
-The architecture of the core metrics pipeline is illustrated in figure \ref{fig:metricspipe}
-
-\begin{figure}[htbp]
+The architecture of the core metrics pipeline is illustrated in figure \ref{fig:metricspipe}.
+\begin{figure}[tbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{images/k8smonitor.pdf}
 	\caption{Core Metrics pipeline.}
 	\label{fig:metricspipe}
 \end{figure}
-
 The interaction with these API can be performed through the command line tool or into graphical web user interfaces web dashboard provided by Google.
-The dashboard allows you to list all the Pods, ReplicationControllers, Services, and other objects deployed in your cluster, as well as to create, modify, and delete them. Figure \ref{fig:dashboard} shows the dashboard.
+The dashboard allows you to list all the Pods, Replication Controllers, Services, and other objects deployed in your cluster, as well as to create, modify, and delete them. Figure \ref{fig:ui-dashboard} shows the dashboard that we are talking about.
 
-
+\begin{figure}[bp]
+	\centering
+	\includegraphics[width=\textwidth]{images/ui-dashboard.png}
+	\caption{Kubernetes Dashboard.}
+	\label{fig:ui-dashboard}
+\end{figure}
 
 
 
@@ -278,14 +291,16 @@ The dashboard allows you to list all the Pods, ReplicationControllers, Services,
 \section{KubeEdge} \label{sec:kubeedgebackground}
 KubeEdge is an open source system extending native containerized application orchestration and device management to hosts at the Edge. It is built upon Kubernetes and provides core infrastructure support for networking, application deployment and metadata synchronization between cloud and edge. It also supports MQTT and allows developers to author custom logic and enable resource constrained device communication at the Edge. KubeEdge consists of a cloud part and an edge part. Both edge and cloud parts are now opensourced.
 
-\section{Motivation}
+\subsection{Motivation}
 The advantages of KubeEdge include mainly:
 \begin{itemize}
-	\item \textbf{Edge Computing}: with business logic running at the Edge, much larger volumes of data can be secured \& processed locally where the data is produced. This reduces the network bandwidth requirements and consumption between Edge and Cloud. This increases responsiveness, decreases costs, and protects customers’ data privacy.
+	\item \textbf{Edge Computing}: with business logic running at the Edge, much larger volumes of data can be secured and processed locally where the data is produced. This reduces the network bandwidth requirements and consumption between Edge and Cloud. This increases responsiveness, decreases costs, and protects customer's data privacy.
 	\item \textbf{Simplified development}: Developers can write regular http or mqtt based applications, containerize these, and run them anywhere - either at the Edge or in the Cloud - whichever is more appropriate.
 	\item \textbf{Kubernetes-native support}: With KubeEdge, users can orchestrate apps, manage devices and monitor app and device status on Edge nodes just like a traditional Kubernetes cluster in the Cloud.
 	\item \textbf{Abundant applications}: It is easy to get and deploy existing complicated machine learning, image recognition, event processing and other high level applications to the Edge.
 \end{itemize}
+
+Note that since KubeEdge is built upon Kubernetes all the tools available in Kubernetes are also available in KubeEdge. Therefore we can benefit of the all monitoring platforms such as the dashboard shown in the previous section.
 
 
 \clearpage

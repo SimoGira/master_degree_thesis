@@ -1,5 +1,5 @@
-\chapter{Verification} \label{chap:verification}
-This chapter will focus on description and verification of ORB-SLAM2 \cite{murORB2} improved solution proposed in the IROS 2019 conference \cite{iros2019}. Primary it will describe how ORB-SLAM2 works. Secondly it will show an accurate inspection necessary to find some potential bugs that cause an unexpected behaviour of the algorithm in a sequential environment.
+\chapter{ORB-SLAM at the edge} \label{chap:verification}
+This chapter will focus on description, verification and customization of ORB-SLAM2 \cite{murORB2} for execution on a low-power heterogeneous embedded device (i.e. NVIDIA Jetson TX2). Primary it will describe how ORB-SLAM2 works. Secondly it will show an accurate inspection necessary to find some potential bugs that cause an unexpected behaviour of the algorithm.
 
  \section{System description}
  As described in \cite{iros2019}, ORB-SLAM2 is a Simultaneous Localization And Mapping system that can works with data coming from monocular, stereo, and RGB-D cameras. A system of this kind has the purpose to allow both map reconstruction and navigation in the most common environment without the support of a GPS.
@@ -40,10 +40,11 @@ To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board,
 After the porting and the optimizations of the ORB-SLAM2 algorithm on the NVIDIA Jetson TX2 to achieve real-time performance, the experimental results conducted in \cite{iros2019} shown a massive improvement of the execution times on some KITTI dataset sequences.
 Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. More specifically, it get into the Track Lost state (fig. \ref{fig:lost})  in a totally random way. Another Track lost state is reached when less then 5 Keyframes are computed and it lost its position (see fig: \ref{fig:lost-reset}).
 
-\begin{figure}
+\begin{figure}[t]
 	\centering
-	\subfloat[Track lost state]{\label{fig:lost}\includegraphics[width=0.90\linewidth]{images/track-lost-after-threshold}} \par
-	\subfloat[Track lost soon after initialization, system resetting.]{\label{fig:lost-reset}\includegraphics[width=0.90\linewidth]{images/Track-lost-soon-after-initialisation}}
+	\subfloat[Track lost state]{\label{fig:lost}\includegraphics[width=0.9\linewidth]{images/track-lost-after-threshold}}
+	\\
+	\subfloat[Track lost soon after initialization, system resetting.]{\label{fig:lost-reset}\includegraphics[width=0.9\linewidth]{images/Track-lost-soon-after-initialisation}}
 	\caption{LOST states of ORB-SLAM2}
 \end{figure}
 
@@ -51,12 +52,12 @@ Due to the randomicity with which the problem occurs, to identify the cause it's
 Once the two blocks are running sequentially, we proceeded to inspect the code in more detail founding in such way some potential bugs.
 The main strategy we adopted to find the possible problems within the code, was looking at the difference among the produced results after two o more sequential execution. To achieve this goal we built a custom logger with different levels of debugging.
 
-An example of the problems we found is located in KeyFrame source code, where a \mintinline{c++}{vector<pair<int, KeyFrame*>> vPairs} has been applied to the C++ standard \mintinline{c++}{sort} function. The problem here is the sort procedure use the less operator compare the address of the pointers instead of the id of the KeyFrame.
+An example of the problems we found is located in the KeyFrame source code, where a \mintinline{c++}{vector<pair<int, KeyFrame*>> vPairs} has been applied to the C++ standard \mintinline{c++}{sort} function. The problem here is the sort procedure use the less operator compare the address of the pointers instead of the id of the KeyFrame.
 To solve this issue we override the less operator in order the achieve the expected behaviour (see listing \ref{lst:lessoverride}).
 Another problem encountered during the code inspection that could introduce a non deterministic execution, is related to the members variables initialization.
-Unlike some programming languages, C/C++ does not initialize most variables to a given value (such as zero) automatically. Thus when a variable is assigned a memory location by the compiler, the default value of that variable is whatever (garbage) value happens to already be in that memory location! A variable that has not been given a known value (usually through initialization or assignment) is called an uninitialized variable.
+Unlike some programming languages, C/C++ does not initialize most variables to a given value (such as zero) automatically. When a variable is assigned a memory location by the compiler, the default value of that variable is whatever (garbage) value happens to already be in that memory location! A variable that has not been given a known value (usually through initialization or assignment) is called an uninitialized variable.
 
-\begin{listing}[H]
+\begin{listing}[tbp]
 \begin{minted}[
 fontsize=\footnotesize,
 breaklines
@@ -79,7 +80,7 @@ namespace std {
 Once these kind of problems have been resolved, the algorithm now is running with a deterministic behaviour. If it get into Track Lost state it happen every time and vice-versa. Unfortunately, when we restore the concurrency between Tracking and Mapping blocks, the problem of unexpected behaviour rise again.
 
 To solve the problem we propose to revise in detail the implementation of the main algorithm for the localization. 
-
+Finally it is also important note that the strategy adopted to achieve the goal can be applied in every application that runs in a concurrent and non-concurrent environment.
 
 
 %\subsection{The problem of the non-determinism} % possible reasons that cause a non deterministic behaviour
@@ -89,12 +90,6 @@ To solve the problem we propose to revise in detail the implementation of the ma
 
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Discussion}
-In this chapter the problem of non deterministic behaviour has been addressed.% and some of the possible solutions to overcome the problem of ...  have been presented.
-
-The strategy adopted to achieve the goal can be applied in every application that runs in a concurrent and non-concurrent environment.
 
 
 \clearpage

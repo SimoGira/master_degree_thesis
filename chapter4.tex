@@ -1,6 +1,6 @@
 \chapter{Methodology} \label{chap:methodology}
 
-This chapter will present a multi-level model design flow for the integration of heterogeneous applications and their deployment to the edge on embedded low power devices like NVIDIA Jetson TX2.
+This chapter presents a multi-level model design flow for the integration of ROS-based heterogeneous applications and their deployment at the edge on embedded low power devices like NVIDIA Jetson TX2.
 
 
 \section{A ROS based robotic system}
@@ -19,7 +19,7 @@ The architecture are explained in the next sections.
 
 \section{First level architecture}
 This is the first architecture to start with and the most common used by robotics researches and developers.
-At this architecture level the purpose is to verify the functioning of the whole system with the only ROS capabilities on a single powerful machine. A simple scheme of this architecture is shown in figure \ref{fig:l1arch}.
+At this architecture level the purpose is to verify the functionality of the whole system with the only ROS capabilities on a single powerful machine. A simple scheme of this architecture is shown in figure \ref{fig:l1arch}.
 
 \begin{figure}[htbp]
 	\centering
@@ -100,12 +100,12 @@ A good practise for performance measurement in ROS is to use profilers such as: 
 
 \section{Second level architecture}
 Once the system is working properly on a single x86 host machine, it is possible to split it deploying manually the ROS nodes on a low power embedded device.
-Again, it is necessary pay attention on communication between nodes, because now they are on different machines and they need to communicate between them through a physical network layer.
+Again, it is necessary to pay attention on communication between nodes, because now they are on different machines and they need to communicate between them through a physical network layer.
 
 It would be preferable to have the control over which ROS nodes run on which machines, for load-balancing and bandwidth management.
-Intuitively a user would duplicate the roslaunch files and comment them in a mutually exclusive way, such that the nodes that run on a machine, don't run on the other. Even if it could work correctly, this kind of hard-coding is not the best practice for this purpose, especially for large projects. The recommanded way is to use machine tags to balance load and control which nodes run on the same machine, and consider having the machine file name depend on an environment variable for reusability.
+Intuitively a user would duplicate the roslaunch files and comment them in a mutually exclusive way, such that the nodes that run on a machine, do not run on the other. Even if it could work correctly, this kind of hard-coding is not the best practice for this purpose, especially for large projects. The recommanded way is to use machine tags to balance load and control which nodes run on the same machine, and consider having the machine file name depend on an environment variable for reusability.
 
-There are some situations, where that's inconvenient or impossible to use the \mintinline{bash}{env} substitution \mintinline{bash}{arg} in order to modifying the behavior without changing any launch files. For example, this is the case when we need for a package that contains a version of the 2d navigation app, but for use in the Gazebo simulator.
+There are some situations, where that's inconvenient or impossible to use the \mintinline{bash}{env} substitution \mintinline{bash}{arg} in order to modifying the behaviour without changing any launch files. For example, this is the case when we need for a package that contains a version of the 2D navigation app, but for use in the Gazebo simulator.
 For navigation, the only thing that changes is actually that the Gazebo environment is based on a different static map, so the \textit{map\_server} node must be loaded with a different argument. It could be use another \mintinline{bash}{env} substitution here. But that would require the user to set a bunch of environment variables just to be able to roslaunch. 
 Instead, it is possible to modify a ``top-level'' aspect of an application, copying the top level launch file and changing the portions you need. 
 
@@ -149,11 +149,11 @@ If the simulator  at L1 has been properly designed and configured, in order to h
 
 
 \section{Deploying the system at the edge}
-The next step is prepare the system for automatic deployment at the edge. For this purpose we need: first a container platform with which containerize the nodes that compose the system, and then we need for an orchestration platform to automatize the deployment over the cluster of embedded devices.
+The next step is to prepare the system for automatic deployment at the edge. For this purpose we need a container platform with which containerize the nodes that compose the system, and second, an orchestration platform to automatize the deployment over the cluster of embedded devices.
 
 \subsection{Containerization with Docker}
 The use of containers to deploy applications is called containerization. Containers are not new, but their use for easily deploying applications is.
-Fundamentally, a container is nothing but a running process, with some added encapsulation features applied to it in order to keep it isolated from the host and from other containers. One of the most important aspects of container isolation is that each container interacts with its own private filesystem; this filesystem is provided by a Docker image. Images include everything needed to run an application - the code or binary, runtimes, dependencies, and any other filesystem objects required.
+Fundamentally, a container is nothing but a running process, with some added encapsulation features applied to it in order to keep it isolated from the host and from other containers. One of the most important aspects of container isolation is that each container interacts with its own private filesystem. This filesystem is provided by a Docker image. Images include everything needed to run an application - the code or binary, runtimes, dependencies, and any other filesystem objects required.
 
 To develop containerized applications, in general, the development workflow looks like this:
 \begin{itemize}
@@ -164,7 +164,7 @@ To develop containerized applications, in general, the development workflow look
 
 An image is created only after the definition of a \textit{Dockefile}. Dockerfiles describe how to assemble a private filesystem for a container, and can also contain some metadata describing how to run a container based on this image. An example of Dockerfile is shown in listing \ref{lst:dockerfilesample}.
 
-\begin{listing}[H]
+\begin{listing}[htbp]
 \begin{minted}[
 baselinestretch=1.2,
 fontsize=\footnotesize,
@@ -192,7 +192,7 @@ CMD [ "npm", "start" ]
 # Copy the rest of your app's source code from your host to your image filesystem.
 COPY . .
 \end{minted}
-\caption{A minimal example of Dockerfile.}
+\caption{A minimal example of a Dockerfile.}
 \label{lst:dockerfilesample}
 \end{listing}
 %\caption{}
@@ -210,9 +210,9 @@ RUN . "/opt/ros/$ROS_DISTRO/setup.sh" && sed -i -e '$isource "$CATKIN_WS/devel/s
 \end{minted}
 
 
-Some official ROS images available on the Docker Hub, come already provided of the \textit{ros\_entrypoint} script indicated above. In case it is missing, it is very simple create it in the root of the file system's image. In this way, when a container is starting, before run the \mintinline{bash}{CMD} command, it will source all the necessary ROS packages previously installed within the image.
+Some official ROS images available on the Docker Hub, come already provided of the \textit{ros\_entrypoint} script indicated above. In case it is missing, it is very simple to create it in the root of the file system's image. In this way, when a container is starting, before run the \mintinline{bash}{CMD} command, it will source all the necessary ROS packages previously installed within the image.
 
-Before proceeding we need to spend so work about Docker network. Docker’s networking subsystem is pluggable, using drivers. Several drivers exist by default, and provide core networking functionality:
+Before proceeding, we need to spend so words about Docker network. Docker’s networking subsystem is pluggable, using drivers. Several drivers exist by default, and provide core networking functionality:
 \begin{itemize}
 	\item \textbf{User-defined bridge networks} are best when you need multiple containers to communicate on the same Docker host.
 	\item \textbf{Host networks} are best when the network stack should not be isolated from the Docker host, but you want other aspects of the container to be isolated.
@@ -220,17 +220,16 @@ Before proceeding we need to spend so work about Docker network. Docker’s netw
 	\item \textbf{Macvlan networks} are best when you are migrating from a VM setup or need your containers to look like physical hosts on your network, each with a unique MAC address.
 	\item \textbf{Third-party network plugins} allow you to integrate Docker with specialized network stacks.
 \end{itemize}
-Looking at the above descriptions provided from Docker documentation, when containers will run on different machines it should used the \textit{Overlay networks}. Nevertheless, in case of ROS applications running on multiple host/devices within a container, there is a further problem related to the ports that the ROS system opens. This mean that we can't statically choice what ports open when the container is running, therefore we have to open all of them using the \textit{Host network}.
+Looking at the above descriptions provided from Docker documentation, when containers will run on different machines it should used the \textit{Overlay networks}. Nevertheless, in case of ROS applications running on multiple host/devices within a container, there is a further problem related to the ports that the ROS system opens. This mean that we cannot statically choice what ports open when the container is running, therefore we have to open all of them using the \textit{Host network}.
 When we are building the docker image, to enable the communication over the \textit{Host network} we need to run the \mintinline{bash}{build} command with the flag \mintinline{bash}{--network=host}.
-
-
 
 Another issue is coming out, when we want to benefit of the hardware resources other than CPU, such as GPUs and tensor cores, provided by the heterogeneous platforms on which we will deploy the applications that compose our system.
 Since Docker 19.03, it has been added the support to the NVIDIA-container-runtime. Provided by NVIDIA, it is a modified version of runc adding a custom pre-start hook to all containers.
 If environment variable \mintinline{bash}{NVIDIA_VISIBLE_DEVICES} is set in the Open Container Initiative (OCI) specifications, the hook will configure GPU access for the container by leveraging nvidia-container-cli from libnvidia-container project.
-There are various methods to setup the docker engine for this purpose. The one proposed by NVIDIA is to register the nvidia runtime reconfiguring the docker daemon configuration file as shown in listing \ref{lst:daemonconfig}.
+There are various methods to setup the docker engine for this purpose.
+The one proposed by NVIDIA is to reconfiguring the docker daemon configuration file as shown in listing \ref{lst:daemonconfig}.
 
-\begin{listing}[H]
+\begin{listing}[tbp]
 \begin{minted}[
 framesep=2mm,
 fontsize=\footnotesize,
@@ -252,7 +251,7 @@ breaklines
 \label{lst:daemonconfig}
 \end{listing}
 
-We have already said, that because of a NVIDIA proprietary library could be more tedious to install within a Docker image, the choice to start from an image already provided with gpu (CUDA) libraries would be recommanded. This kind of images are available on the NVIDIA NGC website \cite{nvidiangc}. Once a gpu capable image has been pulled, we can create a container from it simply adding the \mintinline{bash}{--gpus all} flag to the \mintinline{bash}{docker run} or \mintinline{bash}{docker build} commands.
+Because of a NVIDIA proprietary library could be more tedious to install within a Docker image, the choice to start from an image already provided with gpu (CUDA) libraries would be recommanded. This kind of images are available on the NVIDIA NGC website \cite{nvidiangc}. Once a gpu capable image has been pulled, we can create a container from it simply adding the \mintinline{bash}{--gpus all} flag to the \mintinline{bash}{docker run} or \mintinline{bash}{docker build} commands.
 
 Setting up the Docker platform following the above procedure, will force the system to load some NVIDIA runtime libraries from the host. 
 In particular we could have some problem even we are building our (CUDA) application during the build phase of the image, or trying to build them within a running container previously created. 
@@ -263,7 +262,7 @@ Moreover, it is important to highlight that the automatic loading of the runtime
 
 
 \subsection{Deployment}\label{sec:deployment}
-Finally the system is ready to be distributed on heterogeneous platforms, but it isn't yet ready for an automatic smart deployment and orchestration.
+Finally, the system is ready to be distributed on heterogeneous platforms, but it isn't yet ready for an automatic smart deployment and orchestration.
 For this purpose we need to do one more thing. First of all, we have to push to the Docker Hub all the images created as described in the previous section. In this way we can pull them from any device wherever they are. Then we need for an orchestration capable platform like Kubernetes (see section \ref{sec:kubernetesbackground}). Moreover with the support of KubeEdge \ref{sec:kubeedgebackground} we can extend the Kubernetes capabilities from the cloud to the edge.
 
 To address all these requirements, we can follow the standard procedure described in KubeEdge documentation \cite{kubeedgedoc}.
@@ -276,8 +275,9 @@ After the installation of KubeEdge, setting up cloud side requires two steps:
 \end{itemize}
 
 The \textit{cloudconfig.yaml} configuration file can be generated specifying the \mintinline{bash}{--minconfig} argument to the cloudcore binary (see listing \ref{lst:cloudconfig}).
-
-\begin{listing}[H]
+This configuration file is suitable for beginners, but a more advanced configuration can be generate using \mintinline{bash}{--defaultconfig} flag instead.
+The most important lines to pay attention in the listing \ref{lst:cloudconfig}, are the line 4 and 16. In line 4 we have to type the right path to the configuration file generated during the kubernetes cluster creation. In line 16 we have to write the (static) ip address of the master node where the cloudcore will run.
+\begin{listing}[tb]
 \begin{minted}[
 framesep=2mm,
 baselinestretch=1.2,
@@ -308,10 +308,8 @@ modules:
 \label{lst:cloudconfig}
 \end{listing}
 
-This configuration file is suitable for beginners, but a more advances configuration can be generate using \mintinline{bash}{--defaultconfig} flag instead.
-The most important lines to pay attention in the listing above, are line 4, where e have to type the right path to the configuration file generating during the kubernetes cluster creation. And line 16 in winch we have to write the (static) ip address of the master node where the cloudcore will run.
-
-To the edge side, the procedure to generate the \textit{edgeconfig.yaml} configuration file is the same of the cloud side: either create a minimal configuration with command \mintinline{bash}{edgecore --minconfig} or a full configuration with command \mintinline{bash}{edgecore --defaultconfig}. It's content is slightly different instead (see listing \ref{lst:edgeconfig})
+To the edge side, the procedure to generate the \textit{edgeconfig.yaml} configuration file is the same of the cloud side: either create a minimal configuration with command \mintinline{bash}{edgecore --minconfig} or a full configuration with command \mintinline{bash}{edgecore --defaultconfig}. As we can see in listing \ref{lst:edgeconfig} its content is slightly different than the cloudcore configuration file.
+In this case the lines to pay attention are the line 13 and 15. In line 13 we have to write the node name (necessary for deployments). In line 15 we have to type (static) ip address of the edge node. Finally the lines 16 and 18 are the ip address and port where the server socket of the master node is listening on, and must match those configured in the cloudcore configuration file.
 
 \begin{listing}[H]
 \begin{minted}[
@@ -362,10 +360,7 @@ modules:
 \label{lst:edgeconfig}
 \end{listing}
 
-
-In this case the lines to pay attention are line 13, where we have to write the node name (necessary for deployments). Line 15 where we have to type (static) ip address of the edge node. Finally the line is the ip and port where the server socket of the master node is listening on, and it must to be the same of line 16 in the \textit{cloudconfig.yaml}.
-
-Now, that the cluster is set up, we are ready to write the last three configuration files necessary for the device controller in order to automatically deploy our containerized applications to the edge nodes.
+Once the cluster is set up, we are ready to write the last three configuration files necessary for the device controller in order to automatically deploy our containerized applications to the edge nodes.
 The device controller is the cloud component of KubeEdge which is responsible for device management. Device management in KubeEdge is implemented by making use of Kubernetes Custom Resource Definitions (CRDs) to describe device metadata/status and device controller to synchronize these device updates between edge and cloud. The device controller starts two separate go-routines called \textit{upstream controller} and \textit{downstream controller}. These are not separate controllers as such but named here for clarity.
 The device controller makes use of device model and device instance to implement device management :
 A device model describes the device properties exposed by the device and property visitors to access these properties. A device model is like a reusable template using which many devices can be created and managed. A device instance represents an actual device object. It is like an instantiation of the device model and references properties defined in the model. The device spec is static while the device status contains dynamically changing data like the desired state of a device property and the state reported by the device.
@@ -378,7 +373,7 @@ Generally the steps to address these requirements are the following:
 	\item The reported values of the device twin are updated by the mapper application at the edge and this data is synced back to the cloud by the device controller. User can view the update at the cloud by checking his device instance object.
 \end{enumerate}
 
-Note: Creation of device instance will also lead to the creation of a config map which will contain information about the devices which are required by the mapper applications The name of the config map will be as follows: device-profile-config-\textless edge node name \textgreater. The updation of the config map is handled internally by the device controller.
+Note: Creation of device instance will also lead to the creation of a config map which will contain information about the devices which are required by the mapper applications. The name of the config map will be as follows: device-profile-config-\textless edge-node-name\textgreater. The updation of the config map is handled internally by the device controller.
 Further details on both device model and device instance definition can be found on Kubeedge documentation.
 
 An example of device model, device instance and deployment configuration files are respectively shown below:
@@ -411,7 +406,7 @@ Finally we can create/apply these configuration files files using the \mintinlin
 
 % qui volendo possiamo parlare di misurazione delle performane e memory footprint.
 % http://docs.kubeedge.io/en/latest/setup/memfootprint-test-setup.html
-Once again the are several tools we can use to measure health and performance of the running system. As explained in section \ref{sec:kubernetesbackground} we can benefit of the user friendly dashboard provided by Google, or simply 
+Once again the are several tools we can use to measure health and performance of the running system. As explained in section \ref{sec:kubernetesbackground} we can also benefit of the user friendly dashboard provided by Google.
 
 
 \clearpage

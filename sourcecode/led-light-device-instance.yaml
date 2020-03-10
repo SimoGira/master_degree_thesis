@@ -3,7 +3,6 @@ kind: Device
 metadata:
   name: led-light-instance-01
   labels:
-    description: LEDLight
     model: led-light
 spec:
   deviceModelRef:
