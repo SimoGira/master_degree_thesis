@@ -173,39 +173,69 @@ As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from t
 
 
 \section{Deployment from the cloud to the edge} 
-As mentioned in section \ref{sec:kubeedgebackground}, Kubeedge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, our applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing components is a requirement for Kubernetes, it also allows for scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics made possible to package our applications so that they run smoothly on Kubernetes.
-In this describes the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of Kubeedge.
+As mentioned in section \ref{sec:kubeedgebackground}, KubeEdge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, our applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing components is a requirement for Kubernetes, it also allows for scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics made possible to package our applications so that they run smoothly on Kubernetes.
+In this describes the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of KubeEdge.
 
 
 \subsection{Dockerization}
 At this point the main goal of the project was to reach the edge devices from the host/cloud server wherever they are.
 For this purpose we need first containerize both VOVD and ORB-SLAM2 for NVIDIA Jetsons.
-Since both are wrapped as ROS nodes, we have to include the ROS (Melodic) base distro and the required dependencies.
-In listing ... is shown the dockerfile used to containerize VOVD.
+Since both are wrapped as ROS nodes, we have to include the ROS (Melodic) base distro and the required dependencies to run our applications.
+Listing \ref{lst:dockerfilevovd} shows the Dockerfile used to containerize VOVD during the experiments.
 
-%TODO Dockerfile di VOVD devo accendere la TX-12
-....
-Listing
-....
-
+\begin{listing}[htbp]
+	\begin{minted}[
+	framesep=2mm,
+	baselinestretch=1.2,
+	fontsize=\footnotesize,
+	linenos,
+	breaklines
+	]{bash}
+	FROM ros:melodic-ros-base
+	
+	# set args
+	ARG ip=192.168.254.3
+	ARG master_uri=http://192.168.254.2:11311
+	
+	# set enviroment
+	ENV ROS_MASTER_URI=$master_uri ROS_IP=$ip ROS_WS=/home/catkin_ws
+	
+	COPY VOVD install_dependencies.sh ./
+	
+	# install ros packages
+	RUN mkdir -p $ROS_WS/src && mv VOVD $ROS_WS/src && \
+	chmod +x install_dependencies.sh && sh install_dependencies.sh && \
+	. "/opt/ros/$ROS_DISTRO/setup.sh" && cd $ROS_WS && catkin_make && \
+	sed --in-place --expression '$isource "$ROS_WS/devel/setup.bash"' \
+	/ros_entrypoint.sh
+	
+	# set the working directory
+	WORKDIR $ROS_WS
+	
+	# run ros package launch file
+	ENTRYPOINT ["roslaunch", "vo_controller"]
+	CMD ["test_edge.launch"]
+	\end{minted}
+	\caption{Dockerfile used to create the Docker image of VOVD.}
+	\label{lst:dockerfilevovd}
+\end{listing}
 
 In phase of image's building we set the \mintinline{bash}{--network=host} flag in order to enable the communication over the ROS network among containers running on different machines.
 This is all about the containerization of a ``simple'' ROS node such as VOVD.
-
 
 To the other side ORB-SLAM2 also needs to access to the GPU of the device.
 On NVIDIA NGC web portal, Linux4Tegra (L4T) package provides the bootloader, kernel, necessary firmwares, NVIDIA drivers, flashing utilities and a sample filesystem to be used on Jetson systems. The software packages contained in L4T provide the functionality necessary to run Linux on Jetson devices (Xavier, TX2, and Nano).
 Thus in this case the L4t image provided by NVIDIA is a more affordable starting point for the containerization of the ORB-SLAM2.
 Furthermore we know that ORB-SLAM2 is an heterogeneous application made a wide variety of libraries such OpenCV, OpenVX, CUDA, TensorRT and so on.
-Consequently we have to provide all of these libraries within the dockerfile in order to build our application.
+Consequently we had to provide all of these libraries within the dockerfile in order to build our application.
 
 %TODO Problemi in fase di building del container --> ROS + GPU (TRT)
 %One of the problem we faced during this operation is related to the storage of the Jetson TX2.  Lo diciamo??
 
 
 
-\section{The whole system on Kubeedge}
-After a functional verification at container's level, the system is almost ready to be deployed from the cloud to the edge using kubeedge.
+\section{The whole system on KubeEdge}
+After a functional verification at container's level, the system is almost ready to be deployed from the cloud to the edge using kubeEdge.
 Following the procedure described in section \ref{sec:deployment}, first we setup our cluster in order to enable the physical and virtual communication between the Host (to the cloudside) and edge nodes (to the edgeside).
 Then we create three configuration files for each application we want to deploy to the edge.
 These configuration files contain the informations for device model, device instance and deployment respectively.
@@ -215,7 +245,7 @@ These configuration files contain the informations for device model, device inst
 
 
 
-The performance measurements done with the system running on Kubeedge are shown in table \ref{tab:resultL3-exp}
+The performance measurements done with the system running on KubeEdge are shown in table \ref{tab:resultL3-exp}
 
 
 
@@ -227,14 +257,14 @@ The performance measurements done with the system running on Kubeedge are shown 
 		Setup              & Odom (ms) & Track Pipe (ms) & Dec. (ms) & Frame Elab. (ms) & Feature Ext.(ms) & Supp. (FPS) \\
 		\hline
 		\rowcolor{Gray}
-		\multicolumn{7}{c}{Kubeedge - Performance Measurement: camera 10 Hz}                                                                                                                                           \\
+		\multicolumn{7}{c}{KubeEdge - Performance Measurement: camera 10 Hz}                                                                                                                                           \\
 		\hline
 		orb(j1)            & -             & 47.28          & 12.78             & 40.52                 & 36.02                  & 21.15           \\ \hline
 		vovd(j1)           & 1.30          & -              & -                 & -                     & -                      & -               \\ \hline
 		(orb;vovd)(j1)     & 1.40          & 82.47          & 15.10             & 53.54                 & 48.09                  & 12.12           \\ \hline
 		(orb(j1);vovd(j2)) & 1.38          & 50.83          & 13.98             & 43.80                 & 38.04                  & 19.67           \\ \hline
 		\rowcolor{Gray}
-		\multicolumn{7}{c}{Kubeedge - Performance Measurement: camera 20 Hz}                                                                                                                                           \\
+		\multicolumn{7}{c}{KubeEdge - Performance Measurement: camera 20 Hz}                                                                                                                                           \\
 		\hline
 		orb(j1)            & -             & 50.20          & 16.20             & 42.16                 & 34.82                  & 19.92           \\ \hline
 		vovd(j1)           & 1.21          & -              & -                 & -                     & -                      & -               \\ \hline

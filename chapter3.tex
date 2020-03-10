@@ -38,14 +38,14 @@ To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Unexpected behaviour}
 After the porting and the optimizations of the ORB-SLAM2 algorithm on the NVIDIA Jetson TX2 to achieve real-time performance, the experimental results conducted in \cite{iros2019} shown a massive improvement of the execution times on some KITTI dataset sequences.
-Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. More specifically, it get into the Track Lost state (fig. \ref{fig:lost})  in a totally random way. Another Track lost state is reached when less then 5 Keyframes are computed and it lost its position (see fig: \ref{fig:lost-reset}).
+Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. After processing a frame the algorithm can be in three state: \textit{Not Initialized}, \textit{Track}, \textit{Lost}. The problem is that it get into the Track Lost state (fig. \ref{fig:lost}) after the initialization in a totally random way. Another Track Lost state is reached when less then 5 Keyframes are computed and it loses its position (see fig: \ref{fig:lost-reset}).
 
 \begin{figure}[t]
 	\centering
 	\subfloat[Track lost state]{\label{fig:lost}\includegraphics[width=0.9\linewidth]{images/track-lost-after-threshold}}
 	\\
 	\subfloat[Track lost soon after initialization, system resetting.]{\label{fig:lost-reset}\includegraphics[width=0.9\linewidth]{images/Track-lost-soon-after-initialisation}}
-	\caption{LOST states of ORB-SLAM2}
+	\caption{LOST states of ORB-SLAM2 in sequence 03 of KITTY dataset.}
 \end{figure}
 
 Due to the randomicity with which the problem occurs, to identify the cause it's necessary isolate the problem as much as possible. For this purpose the first step has been sequentialize the execution between Tracking and Mapping blocks.

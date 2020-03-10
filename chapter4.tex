@@ -47,20 +47,20 @@ fontsize=\footnotesize,
 #include "ros/ros.h"
 ...
 int main(int argc, char **argv) {
- ros::init(argc, argv, "nodeA");
- ros::NodeHandle n;
- ros::Publisher pub;
- pub=n.advertise<T>("topicT", 10);
- while (ros::ok()) {
-  <put here your application>
-  ...
-  pub.publish(msg);
-  ...
- }
- return 0;
+ros::init(argc, argv, "nodeA");
+ros::NodeHandle n;
+ros::Publisher pub;
+pub=n.advertise<T>("topicT", 10);
+while (ros::ok()) {
+<put here your application>
+...
+pub.publish(msg);
+...
+}
+return 0;
 }
 \end{minted}
-\captionof{listing}{Example of publisher.}
+\captionof{lstlisting}{Example of publisher.}
 \label{lst:pub}
 \end{minipage}\hfill
 \begin{minipage}{.48\textwidth}
@@ -74,23 +74,22 @@ breaklines
 #include "ros/ros.h"
 ...
 void subCallback(const <T> msg) {
- <do stuff with received message>
+<do stuff with received message>
 }
 
 int main(int argc, char **argv) {
- ros::init(argc, argv, "nodeB");
- ros::NodeHandle n;
- ros::Subscriber sub;
- sub=n.subscribe("topicT", 10, subCallback);
- ...
- return 0;
+ros::init(argc, argv, "nodeB");
+ros::NodeHandle n;
+ros::Subscriber sub;
+sub=n.subscribe("topicT", 10, subCallback);
+...
+return 0;
 }
 \end{minted}
-\captionof{listing}{Example of subscriber.}
+\captionof{lstlisting}{Example of subscriber.}
 \label{lst:sub}
 \end{minipage}
 \\
-
 
 Commands such as \mintinline{bash}{rostopic nodes} and \mintinline{bash}{rostopic list} can be used to verify the correct communication between the nodes that compose the system.
 There exist more other tools to better inspect an application based on ROS, and they are all available online on ROS documentation.
