@@ -289,9 +289,10 @@ The dashboard allows you to list all the Pods, Replication Controllers, Services
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{KubeEdge} \label{sec:kubeedgebackground}
-KubeEdge is an open source system extending native containerized application orchestration and device management to hosts at the Edge. It is built upon Kubernetes and provides core infrastructure support for networking, application deployment and metadata synchronization between cloud and edge. It also supports MQTT and allows developers to author custom logic and enable resource constrained device communication at the Edge. KubeEdge consists of a cloud part and an edge part. Both edge and cloud parts are now opensourced.
+KubeEdge is an open source system extending native containerized application orchestration and device management to hosts at the Edge. It is built upon Kubernetes and provides core infrastructure support for networking, application deployment and metadata synchronization between cloud and edge. It also supports MQTT and allows developers to author custom logic and enable resource constrained device communication at the Edge.
 
 \subsection{Motivation}
+With KubeEdge it is easy to get and deploy existing complicated machine learning, image recognition, event processing and other high level applications to the Edge. With business logic running at the Edge, much larger volumes of data can be secured and processed locally where the data is produced. With data processed at the Edge, the responsiveness is increased dramatically and data privacy is protected.
 The advantages of KubeEdge include mainly:
 \begin{itemize}
 	\item \textbf{Edge Computing}: with business logic running at the Edge, much larger volumes of data can be secured and processed locally where the data is produced. This reduces the network bandwidth requirements and consumption between Edge and Cloud. This increases responsiveness, decreases costs, and protects customer's data privacy.
@@ -300,7 +301,43 @@ The advantages of KubeEdge include mainly:
 	\item \textbf{Abundant applications}: It is easy to get and deploy existing complicated machine learning, image recognition, event processing and other high level applications to the Edge.
 \end{itemize}
 
-Note that since KubeEdge is built upon Kubernetes all the tools available in Kubernetes are also available in KubeEdge. Therefore we can benefit of the all monitoring platforms such as the dashboard shown in the previous section.
+In the era of Internet of Thing (IoT), billions of sensors and actuators are deployed worldwide. To manage the IoT devices and process data with cloud computing resource,
+Cloud providers such as Amazon AWS and Microsoft Azure are developing the IoT platform and are providing services or solutions on their respective cloud environments.
+
+Most IoT platforms employ a Publisher/Subscriber (Pub/Sub) brokers such as MQTT \cite{mqttpubsub} or AMQP to provide the communication channel between IoT devices and Cloud services, like Azure IoT Hub. Pub/Sub protocol such as MQTT is suitable for asynchronous communication between edge devices and cloud services. However it does not support synchronous RPC based communication, for the increased need as more and more computation tasks \cite{bigdataedge}\cite{edgerealtime} move to the edges and tightly integrate with services in the cloud.
+One common scenario for RPC based communication is the cloud native micro-service based application. With micro-service architecture, an application is designed into multiple micro services, each of which is deployed and managed independently. These micro services communicate each other usually through REST/HTTP protocol. When some of the micro services run on the edge nodes and need to communicate with those in the cloud, it requires the one network address space for both edge nodes and server instances in the cloud.
+This is where current edge computing solutions break down, partly due to the asynchronous Pub/Sub based MQTT protocol \cite{kubeedgeinspection}.
+KubeEdge leverages Kubernetes container platform to provide RPC based communication channel between edge and cloud, the runtime execution environment of containers and Serverless functions, as well as a mechanism to sync and store metadata to support self-management of an application running on the edge in an offline scenario.  
+
+Furthermore, since KubeEdge is built upon Kubernetes all the tools available in Kubernetes are also available in KubeEdge. Therefore we can benefit of all the monitoring platforms such as the dashboard and metric-server shown in the previous section.
+
+\subsection{Kubeedge Architecture}
+As shown in Figure \ref{fig:kubeedge-arch}, KubeEdge is a multi-tenant infrastructure platform for edge computing.
+The platform includes the following components, excluding Kubernetes.
+\begin{itemize}
+	\item \textbf{Edged}: an agent that runs on edge nodes and manages containerized applications.
+	\item \textbf{EdgeHub}: a web socket client responsible for interacting with Cloud Service for edge computing (like Edge
+	Controller as in the KubeEdge Architecture). This includes syncing cloud-side resource updates to the edge and
+	reporting edge-side host and device status changes to the cloud.
+	\item \textbf{CloudHub}: A web socket server responsible for watching changes at the cloud side, caching and sending
+	messages to EdgeHub.
+	\item \textbf{EdgeController}: an extended kubernetes controller which manages edge nodes and pods metadata so that the
+	data can be targeted to a specific edge node.
+	\item \textbf{EventBus}: an MQTT client to interact with MQTT servers (mosquitto), offering publish and subscribe capabilities to other components.
+	\item \textbf{DeviceTwin}: responsible for storing device status and syncing device status to the cloud. It also provides query
+	interfaces for applications.
+	\item \textbf{MetaManager}: the message processor between edged and edgehub. It is also responsible for storing/retrieving
+	metadata to/from a lightweight database (SQLite).
+\end{itemize}
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=\textwidth]{images/kubeedge-arch}
+	\caption{KubeEdge Architecture.}
+	\label{fig:kubeedge-arch}
+\end{figure}
+
+
 
 
 \clearpage

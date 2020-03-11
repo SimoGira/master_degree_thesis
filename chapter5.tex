@@ -68,7 +68,7 @@ As shown in figure \ref{fig:l1archexp}, in this case there are two main ROS node
 \end{figure}
 
 Because of the most used robotics platforms used today support the Melodic Morenia \cite{rosmelodic} version of ROS, and because VOVD was written with the Kinetic version, it has been decided to convert VOVD in the relative Melodic ROS version. This task required a redefinition of some functions related to the ROS \mintinline{cpp}{tf2} package \cite{tfros} due to the deprecation of the \mintinline{cpp}{tf} package functions previously used. 
-Another modification done is related to the 3D map used by Gazebo \cite{Gazebo} simulator. The problem was that it came with a featureless map generated from an ``.pgm'' file (see fig. \ref{fig:mapfile}), and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map. A comparison of the 3D map before and after this change is visible in figure \ref{fig:3Dmapcomparison}.
+Another modification done is related to the 3D map used by Gazebo \cite{Gazebo} simulator. The problem was that it came with a featureless map generated from an ``.pgm'' file (see fig. \ref{fig:mapfile}), and because of ORB-SLAM2 properly works only if some features are detected during its execution, it has been necessary to add a material to the 3D model of the map. The results obtained before and after applying the material on the 3D map are visible in figure \ref{fig:3Dmapcomparison}.
 
 \begin{figure}[htbp]
 	\centering
@@ -77,7 +77,7 @@ Another modification done is related to the 3D map used by Gazebo \cite{Gazebo} 
 	\label{fig:mapfile}
 \end{figure}
 
-Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, thus no others operations have been required to complete our first architecture level.
+Talking about ORB-SLAM2, it comes already provided with the necessaries functions to run in a ROS environment, thus no others operations have been required to complete the first architecture level.
 	
 \begin{figure*}[htbp]
 	\centering
@@ -89,7 +89,7 @@ Talking about ORB-SLAM2, it comes already provided with the necessaries function
 	\label{fig:3Dmapcomparison}
 \end{figure*}
 
-Thanks to the modularity of ROS we were able to verify the functional behaviour of the system implementing  a custom ROS node that act as a monitor. It listens on all topics of the system and captures the informations of interest.  
+Thanks to the modularity of ROS we were able to verify the functional behaviour of the system implementing  a custom ROS node that acts as a monitor. It listens on all topics of the system and captures the informations of interest.  
 To obtain a more accurate performance measurement, we added some time points within the source code of both VOVD and ORB-SLAM2. Specifically speaking for VOVD we measure the time to perform the local planner computation. To the ORB-SLAM2 side instead we measure the time to elaborate each frame coming from the simulator camera.
 The performance measurement obtained at this architecture level are shown in table \ref{tab:resultL1-exp}.
 
@@ -110,7 +110,7 @@ The performance measurement obtained at this architecture level are shown in tab
 \subsection{Architecture at L2}
 Another common architecture in robotics involves the distribution of ROS nodes on different hardware platforms. In our case we have two NVIDIA Jetson TX2. 
 This step requires the split of our system in two parts: the \textit{Host}, on which runs Gazebo simulator, and the \textit{Device/s} that will perform either the robot navigation and SLAM.
-Figure \ref{fig:l2arch-exp} show the configuration we setup during the experiment.
+Figure \ref{fig:l2arch-exp} shows the configuration we setup during the experiment.
 
 \begin{figure}[htbp]
 	\centering
@@ -119,11 +119,11 @@ Figure \ref{fig:l2arch-exp} show the configuration we setup during the experimen
 	\label{fig:l2arch-exp}
 \end{figure}
 
-Due to the several interconnected nodes, each of which having many parameters, it is recommanded to create a roslaunch file  using the \textit{machine tag}. As explained in chapter \ref{chap:methodology}, these tags allow for control over which nodes run on which machines, for load-balancing and bandwidth management.
+Due to the several interconnected nodes, each of which having many parameters, it is recommanded to create a roslaunch file  using the \textit{machine tag}. As explained in chapter \ref{chap:methodology}, these tags allow to control on which machines the node run.
 
-At this architecture level the main focus is on the communication between the \textit{Host}, that act as Master, and the other external nodes that represent the slaves. It is important to verify that the system continues working properly and that the Network doesn't become a bottleneck. For example, if we need to transfer a stream of images from one ROS nodes to another that is running on different machine, we should compress each frame before send it over the network. In this way, we avoid to saturate the bandwidth of the network. In this case the compression task is performed to the Host side from the aruco camera within Gazebo simulator. The decompression instead is computed on Jetson by the ORB-SLAM2 node whenever it receives a new frame to elaborate.
+At this architecture level the main focus is on the communication between the \textit{Host}, that acts as Master, and the other external nodes that represent the slaves. It is important to verify that the system continues working properly and that the Network doesn't become a bottleneck. For example, if we need to transfer a stream of images from one ROS node to another that is running on different machine, we should compress each frame before send it over the network. In this way, we avoid to saturate the bandwidth of the network. In our case the compression task is performed to the Host side from the robot's camera within Gazebo simulator. The decompression instead is computed on Jetson by the ORB-SLAM2 node whenever it receives a new frame to elaborate.
 We measured the performance of the system in the same way we have done in the previous architecture level.
-Note that, as we expected, the performance of the ORB-SLAM2 are dropped down due to the limited computing capability of the Jetson. This is more highlighted when we run both VOVD and ORB-SLAM2 on the same device because they are competing for the hardware resources.
+Note that, as expected, the performance of ORB-SLAM2 are dropped down due to the limited computing capability of the Jetson. This is more highlighted when we run both VOVD and ORB-SLAM2 on the same device because they are competing for the hardware resources.
 The new performance measurements are presented in table \ref{tab:resultL2-exp}.
 Note that, due to the modularity of ROS, we were able to fine tune the system without making any change to the code. For example, we can easily modify either frequency of the camera output or the number of key-points extracted for each incoming frame.
 Another parameter to consider is the bandwidth of the network. The virtual Asus Xtion camera used by Gazebo publish images with a resolution of 1280*720*3 at 20 frames per second.
@@ -164,23 +164,23 @@ The key point here is that if the simulator has been properly configured at L1 a
 
 As we can see in Fig. \ref{fig:l3archexp}, the simulator has been removed from the \textit{Host} and it has been replaced by the real robot, on which one or more embedded devices can be attached.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
-	\includegraphics[width=\textwidth]{images/L3-arch}
+	\includegraphics[width=\textwidth]{images/L3-arch-exp}
 	\caption{L3 architecture}
 	\label{fig:l3archexp}
 \end{figure}
 
 
-\section{Deployment from the cloud to the edge} 
-As mentioned in section \ref{sec:kubeedgebackground}, KubeEdge is built upon Kubernetes and provides fundamental infrastructure support for network, app. deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, our applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing components is a requirement for Kubernetes, it also allows for scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard out. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process’s runtime environment. These characteristics made possible to package our applications so that they run smoothly on Kubernetes.
-In this describes the process used in our project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of KubeEdge.
+\section{Deployment from the cloud to the edge}
+This section describes the process used in the project to prepare both VOVD and ORB-SLAM2 applications for the edge computing through the support of KubeEdge.
+As mentioned in section \ref{sec:kubeedgebackground}, KubeEdge is built upon Kubernetes and provides fundamental infrastructure support for network, application deployment and metadata synchronization between cloud and edge. As we know, Kubernetes uses containers to run isolated, packaged applications across its cluster nodes. To run on Kubernetes, our applications must be encapsulated in one or more container images and executed using a container runtime like Docker. While containerizing components is a requirement for Kubernetes, it also allows for scaling and management. For instance, containers provide isolation between the application environment and the external host system, support a networked, service-oriented approach to inter-application communication, and typically take configuration through environmental variables and expose logs written to standard error and standard output. Containers themselves encourage process-based concurrency and help maintain dev/prod parity by being independently scalable and bundling the process's runtime environment. These characteristics made possible to package our applications so that they run smoothly on Kubernetes.
 
 
 \subsection{Dockerization}
 At this point the main goal of the project was to reach the edge devices from the host/cloud server wherever they are.
-For this purpose we need first containerize both VOVD and ORB-SLAM2 for NVIDIA Jetsons.
-Since both are wrapped as ROS nodes, we have to include the ROS (Melodic) base distro and the required dependencies to run our applications.
+For this purpose, at firt we needed to containerize both VOVD and ORB-SLAM2 for NVIDIA Jetsons.
+Since both are wrapped as ROS nodes, we had to include the ROS (Melodic) base distro and the required dependencies to run our applications.
 Listing \ref{lst:dockerfilevovd} shows the Dockerfile used to containerize VOVD during the experiments.
 
 \begin{listing}[htbp]
@@ -226,7 +226,7 @@ This is all about the containerization of a ``simple'' ROS node such as VOVD.
 To the other side ORB-SLAM2 also needs to access to the GPU of the device.
 On NVIDIA NGC web portal, Linux4Tegra (L4T) package provides the bootloader, kernel, necessary firmwares, NVIDIA drivers, flashing utilities and a sample filesystem to be used on Jetson systems. The software packages contained in L4T provide the functionality necessary to run Linux on Jetson devices (Xavier, TX2, and Nano).
 Thus in this case the L4t image provided by NVIDIA is a more affordable starting point for the containerization of the ORB-SLAM2.
-Furthermore we know that ORB-SLAM2 is an heterogeneous application made a wide variety of libraries such OpenCV, OpenVX, CUDA, TensorRT and so on.
+Furthermore we know that ORB-SLAM2 is an heterogeneous application made of a wide variety of libraries such OpenCV, OpenVX, CUDA, TensorRT and so on.
 Consequently we had to provide all of these libraries within the dockerfile in order to build our application.
 
 %TODO Problemi in fase di building del container --> ROS + GPU (TRT)
@@ -237,15 +237,13 @@ Consequently we had to provide all of these libraries within the dockerfile in o
 \section{The whole system on KubeEdge}
 After a functional verification at container's level, the system is almost ready to be deployed from the cloud to the edge using kubeEdge.
 Following the procedure described in section \ref{sec:deployment}, first we setup our cluster in order to enable the physical and virtual communication between the Host (to the cloudside) and edge nodes (to the edgeside).
-Then we create three configuration files for each application we want to deploy to the edge.
+Then we created three configuration files for each application we want to deploy to the edge.
 These configuration files contain the informations for device model, device instance and deployment respectively.
 
 %TODO qui si potrebbe dire di più ad esempio come abbiamo configurato host e jetson i file di device model device instance e deployment
-
-
-
-
-The performance measurements done with the system running on KubeEdge are shown in table \ref{tab:resultL3-exp}
+During our experiments we tested the system in various conditions: we forced the deployment either to a single device or across multiple devices.
+The performance measurements done with the system running on KubeEdge are shown in table \ref{tab:resultL3-exp}.
+The results show that KubeEdge platform does not contribute to the normal network latency in a significant way (the container image download time is not included in the test).
 
 
 
@@ -274,15 +272,6 @@ The performance measurements done with the system running on KubeEdge are shown 
 	\end{tabularx}
 	\caption{\label{tab:resultL3-exp}}
 \end{table}
-
-
-%\section{Discussion}
-
-
-
-
-
-
 
 
 
