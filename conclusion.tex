@@ -1,50 +1,37 @@
 \chapter*{Conclusions And Future Works}
 \addcontentsline{toc}{chapter}{Conclusions}
-%In this thesis a .... has been presented to address the issue of providing ...
- 
- 
- %TODO rendere il sistema (le applicazioni) più flessibile per l'esecuzione su container ditribuiti adottanto l'uso delle variabili di ambiente ed eliminando tutti i parametri hardcodati
- %TODO abilitare il monitoraggio dei nodi attraverso la dashboard 
- %TODO ...
- 
- 
- 
- 
- 
- 
- 
- 
-In this thesis, we presented a design flow based on Kubernetes platform and ROS for edge computing. We showed that it is possible for KubeEdge to manage remote edge nodes and deploy and manage applications into the edge with the same API.
-% We implemented a communication protocol to allow
-% seamless bidirectional communication between cloud and
-% edge for applications leveraging both edge resources and
-% cloud. 
-% 
-% 
-% We extended Kubernetes model from centralized data
-% center deployment into the edge with EdgeController and
-% EdgeCore components. 
+In this thesis we revised and optimized the ORB-SLAM2 algorithm for NVIDIA Jetson TX2. Then, we presented a design flow based on Kubernetes platform and ROS for edge computing. We showed that it is possible for KubeEdge to manage remote edge nodes and deploy and manage applications into the edge with the same API.
+We extended ROS model from centralized server deployment into the edge with EdgeController and DeviceTwin components.
 
-...
- 
-This work is a preliminary experience and we intend to optimize and enhance KubeEdge as future work.
- 
-% One future work we consider is the concept and design
-% of edge mesh network. In the current communication model,
-% the inter-edge communication is through KubeBus at the
-% cloud side. We have seen the scenarios that multiple edge
-% nodes need to communicate each other directly without cloud,
-% mainly due to local private network policies and data security.
-% With the direct connections among edge nodes, KubeEdge
-% will form a virtual network mesh among all edge nodes, and 
-% 
- 
- 
- 
- 
- 
- 
-%%%%%%%%
+This work is a preliminary experience and we intend to optimize and enhance our system on KubeEdge as future work.
+One future work we consider is the extension of the system including a high level crash avoidance planner.
+Since Deep Learning being widely used over all categories of robots, in view of the fast growth of applications that use deep learning inference and training, we will enable our system to use neural networks applications.
+Furthermore, we will extend the orchestration system of Kubernetes considering non-functional constraints such as real-time, power consumption, energy efficiency, reliability, etc.
+Another potential future work is the implementation of a solution for the automatic generation of container's images to deploy at the edge.
 
 \clearpage
 \thispagestyle{empty}
+
+
+% 12 min presentazione --> 12 slides comprese di titolo
+
+% prendere prime rihe del paper e spezzare in 3 punti
+% st
+
+% goal intro thesis 
+
+% problema scviluppoo appciazion rootivhe sono sempre più intelligenti
+
+% img 
+
+
+
+
+
+% ogni slide presenrare al + di un minuto circa
+
+% 
+
+% aggiungere + funzionalità applicazione ----- mettere global planner ---- applcazioni che lavorano con reti neurali (xk HI) ----> applicazione deve essre estesa
+% studio dell'orchestrazione delle applciazioni considerando tutti i vincoli non funzionali.
+% proporre una soluzione auytmatica alla generatione su diverse piattaforme.

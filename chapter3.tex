@@ -48,7 +48,7 @@ Despite these performance improvements, the algorithm seems to exhibit some unex
 	\caption{LOST states of ORB-SLAM2 in sequence 03 of KITTY dataset.}
 \end{figure}
 
-Due to the randomicity with which the problem occurs, to identify the cause it's necessary isolate the problem as much as possible. For this purpose the first step has been sequentialize the execution between Tracking and Mapping blocks.
+Due to the randomicity with which the problem occurs, to identify the cause it is necessary isolate the problem as much as possible. For this purpose the first step has been sequentialize the execution between Tracking and Mapping blocks.
 Once the two blocks are running sequentially, we proceeded to inspect the code in more detail founding in such way some potential bugs.
 The main strategy we adopted to find the possible problems within the code, was looking at the difference among the produced results after two o more sequential execution. To achieve this goal we built a custom logger with different levels of debugging.
 

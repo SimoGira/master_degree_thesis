@@ -137,7 +137,7 @@ Once again it is very important measure the performance of our system, because w
 This is the final architecture level. As shown in figure \ref{fig:l3arch} the simulator has been removed and it has been replaced by the real robot.
 
 The difference respect to the previous architecture level is that there there is one or more driver node that communicate with a piece of hardware and it must run on the machine to which the hardware is physically connected.
-If the simulator  at L1 has been properly designed and configured, in order to have the system running on the real robot it's enough remove the simulator from the ROS netowrk and attach the robot instead. This operation depend to the physical infrastructure of the netwrok we are on. 
+If the simulator  at L1 has been properly designed and configured, in order to have the system running on the real robot it is enough remove the simulator from the ROS netowrk and attach the robot instead. This operation depend to the physical infrastructure of the network we are on. 
 
 \begin{figure}[htbp]
 	\centering
@@ -224,7 +224,7 @@ When we are building the docker image, to enable the communication over the \tex
 
 Another issue is coming out, when we want to benefit of the hardware resources other than CPU, such as GPUs and tensor cores, provided by the heterogeneous platforms on which we will deploy the applications that compose our system.
 Since Docker 19.03, it has been added the support to the NVIDIA-container-runtime. Provided by NVIDIA, it is a modified version of runc adding a custom pre-start hook to all containers.
-If environment variable \mintinline{bash}{NVIDIA_VISIBLE_DEVICES} is set in the Open Container Initiative (OCI) specifications, the hook will configure GPU access for the container by leveraging nvidia-container-cli from libnvidia-container project.
+If environment variable \mintinline{bash}{NVIDIA_VISIBLE_DEVICES} is set in the Open Container Initiative (OCI) specifications, the hook will configure GPU access for the container by leveraging nvidia-container-cli from libnvidia-container project \cite{libnvidiacontainer}.
 There are various methods to setup the docker engine for this purpose.
 The one proposed by NVIDIA is to reconfiguring the docker daemon configuration file as shown in listing \ref{lst:daemonconfig}.
 
@@ -250,7 +250,7 @@ breaklines
 \label{lst:daemonconfig}
 \end{listing}
 
-Because of a NVIDIA proprietary library could be more tedious to install within a Docker image, the choice to start from an image already provided with gpu (CUDA) libraries would be recommanded. This kind of images are available on the NVIDIA NGC website \cite{nvidiangc}. Once a gpu capable image has been pulled, we can create a container from it simply adding the \mintinline{bash}{--gpus all} flag to the \mintinline{bash}{docker run} or \mintinline{bash}{docker build} commands.
+NVIDIA proprietary libraries could be more tedious to install within a Docker image, thus the choice to start from an image already provided with gpu (CUDA) libraries would be recommanded. This kind of images are available on the NVIDIA NGC website \cite{nvidiangc}. Once a gpu capable image has been pulled, we can create a container from it simply adding the \mintinline{bash}{--gpus all} flag to the \mintinline{bash}{docker run} or \mintinline{bash}{docker build} commands.
 
 Setting up the Docker platform following the above procedure, will force the system to load some NVIDIA runtime libraries from the host. 
 In particular we could have some problem even we are building our (CUDA) application during the build phase of the image, or trying to build them within a running container previously created. 
