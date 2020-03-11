@@ -1,7 +1,7 @@
-\chapter{ORB-SLAM at the edge} \label{chap:verification}
+\chapter{ORB-SLAM at the Edge} \label{chap:verification}
 This chapter will focus on description, verification and customization of ORB-SLAM2 \cite{murORB2} for execution on a low-power heterogeneous embedded device (i.e. NVIDIA Jetson TX2). Primary it will describe how ORB-SLAM2 works. Secondly it will show an accurate inspection necessary to find some potential bugs that cause an unexpected behaviour of the algorithm.
 
- \section{System description}
+ \section{System Description}
  As described in \cite{iros2019}, ORB-SLAM2 is a Simultaneous Localization And Mapping system that can works with data coming from monocular, stereo, and RGB-D cameras. A system of this kind has the purpose to allow both map reconstruction and navigation in the most common environment without the support of a GPS.
  The system consists of the following three main blocks (see figure \ref{fig:orbslam}):
 
@@ -14,7 +14,7 @@ This chapter will focus on description, verification and customization of ORB-SL
 	It aims at adjusting the scale drift error accumulated during the input analysis. When a loop in the robot pathway is detected, this block updates the mapped information through a high latency heavy computation, during which the first two blocks are suspended. This can lead the robot to loose tracking and localization information and, as a consequence, the robot to get temporary lost. The computation efficiency of this block (running on-demand) is crucial for the quality of the final results.
 \end{description}
 
-\begin{figure}
+\begin{figure}[tbp]
 	\centering
 	\includegraphics[width=0.90\textwidth]{images/orb-slam-overview2.pdf}
 	\caption{Main blocks of the ORB-SLAM2 algorithm.}
@@ -36,7 +36,7 @@ To fully exploit the heterogeneous nature of the target NVIDIA Jetson TX2 board,
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Unexpected behaviour}
+\section{Unexpected Behaviour}
 After the porting and the optimizations of the ORB-SLAM2 algorithm on the NVIDIA Jetson TX2 to achieve real-time performance, the experimental results conducted in \cite{iros2019} shown a massive improvement of the execution times on some KITTI dataset sequences.
 Despite these performance improvements, the algorithm seems to exhibit some unexpected behaviours too frequently, especially with sequences that contain a higher space-temporal variation between one frame and the next one. After processing a frame the algorithm can be in three state: \textit{Not Initialized}, \textit{Track}, \textit{Lost}. The problem is that it get into the Track Lost state (fig. \ref{fig:lost}) after the initialization in a totally random way. Another Track Lost state is reached when less then 5 Keyframes are computed and it loses its position (see fig: \ref{fig:lost-reset}).
 
@@ -73,7 +73,7 @@ namespace std {
     }
 }
 \end{minted} 
-\caption{Overriding the less operator.}
+\caption{Overriding the less operator in C++.}
 \label{lst:lessoverride}
 \end{listing}
 
