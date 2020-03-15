@@ -56,7 +56,7 @@ The main technical specifications of the \textit{Host} and the embedded device u
 
 \subsection{Architecture at L1}
 At this architecture level we put a whole ROS-based system on a single Intel x86 powered machine that we will conventionally call \textit{Host}.
-As shown in figure \ref{fig:l1archexp}, in this case there are two main ROS nodes that communicate: the ORB-SLAM2, described in chapter \ref{chap:verification}, and a hybrid motion planner (VOVD \cite{VOVD}) based on Move Base navigation stack. 
+In this case there are two main ROS nodes that communicate: the ORB-SLAM2, described in chapter \ref{chap:verification}, and a hybrid motion planner (VOVD \cite{VOVD}) based on Move Base navigation stack. 
 Both applications act as ROS nodes, but actually only the VOVD module perform the 2D navigation task of the robot. To other side, ORB-SLAM process the frames coming from the camera and publish the current pose while it is building the 3D map.
 An overview of the current system configuration is presented in figure \ref{fig:sysoverview}.
 
